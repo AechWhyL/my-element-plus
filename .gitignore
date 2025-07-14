@@ -1,0 +1,57 @@
+# 依赖目录
+node_modules/
+.pnpm/
+.yarn/
+dist/
+.cache/
+
+# 构建输出
+build/
+lib/
+es/
+umd/
+*.min.js
+*.min.css
+*.d.ts
+*.map
+
+# 日志文件
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 环境变量
+.env
+.env.local
+.env*.local
+
+# IDE 和编辑器配置
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 操作系统生成文件
+.DS_Store
+Thumbs.db
+
+# 测试覆盖率
+coverage/
+.nyc_output/
+
+# 文档工具
+docs/.vuepress/dist
+docs/.vitepress/dist
+
+# 临时文件
+.temp/
+.tmp/
+
+# 其他
+*.bak
+*.patch
+*.diff

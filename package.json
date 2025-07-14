@@ -1,0 +1,43 @@
+{
+  "name": "hyl-fake-element-plus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo todo",
+    "dev": "pnpm --filter @hyl-fake-element-plus/playground dev",
+    "dev:docs": "pnpm --filter @hyl-fake-element-plus/docs dev",
+    "build:docs": "pnpm --filter @hyl-fake-element-plus/docs build",
+    "preview:docs": "pnpm --filter @hyl-fake-element-plus/docs preview",
+    "prepare": "husky"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.12.4",
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.12",
+    "@types/node": "^20.19.7",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "@vitejs/plugin-vue-jsx": "^5.0.1",
+    "@vue/tsconfig": "^0.5.1",
+    "husky": "^9.1.7",
+    "postcss-color-mix": "^1.1.0",
+    "postcss-each": "^1.1.0",
+    "postcss-each-variables": "^0.3.0",
+    "postcss-for": "^2.1.1",
+    "postcss-nested": "^6.2.0",
+    "typescript": "^5.8.3",
+    "vite": "^7.0.4",
+    "vitest": "^1.6.1",
+    "vue-tsc": "^1.8.27"
+  },
+  "dependencies": {
+    "@hyl-fake-element-plus/hooks": "workspace:*",
+    "@hyl-fake-element-plus/theme": "workspace:*",
+    "@hyl-fake-element-plus/utils": "workspace:*",
+    "hyl-fake-element-plus": "workspace:*",
+    "lodash-es": "^4.17.21",
+    "vue": "^3.5.17"
+  }
+}
