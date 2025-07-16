@@ -18,11 +18,23 @@ export interface ButtonProps {
   useThrottle?: boolean;
   loadingIcon?: string;
   throttleDuration?: number;
-  icon?:string,
+  icon?: string;
 }
 
 export interface ButtonEmits {
   (e: "click", val: MouseEvent): void;
+}
+
+export interface ButtonGroupProps {
+  size?: ButtonSize;
+  type?: ButtonType;
+  disabled?: boolean;
+}
+
+export interface ButtonGroupContext {
+  size?: ButtonSize;
+  type?: ButtonType;
+  disabled?: boolean;
 }
 
 export interface ButtonInstance {

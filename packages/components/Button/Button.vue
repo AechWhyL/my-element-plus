@@ -2,7 +2,8 @@
 import { throttle } from "lodash-es";
 import type { ButtonEmits, ButtonProps } from "./types";
 import ErIcon from "../Icon/Icon.vue";
-import { computed, ref, useSlots } from "vue";
+import { computed, ref, inject } from "vue";
+import { BUTTON_GROUP_CONTEXT_KEY } from "./constant";
 
 defineOptions({
   name: "ErButton",
@@ -10,9 +11,21 @@ defineOptions({
 const props = withDefaults(defineProps<ButtonProps>(), {
   tag: "button",
   nativeType: "button",
-  type: "primary",
   useThrottle: false,
   throttleDuration: 500,
+});
+
+const ctx = inject(BUTTON_GROUP_CONTEXT_KEY, void 0);
+
+const computedSize = computed(() => {
+  return ctx?.size ?? props.size ?? "default";
+});
+const computedType = computed(() => {
+  return ctx?.type ?? props.type ?? "primary";
+});
+
+const computedDisabled = computed(() => {
+  return props.disabled || ctx?.disabled || false;
 });
 
 const _ref = ref<HTMLButtonElement>();
@@ -30,11 +43,15 @@ const handleBtnClickThrottled = throttle(
 const iconStyle = computed(() => {
   if (!!slots.default) {
     return {
-      ['margin-right']: "8px",
+      ["margin-right"]: "8px",
     };
   } else {
     return {};
   }
+});
+
+defineExpose({
+  _ref: _ref,
 });
 </script>
 <template>
@@ -43,15 +60,15 @@ const iconStyle = computed(() => {
     :ref="_ref"
     :type="props.nativeType"
     :autofocus="props.autoFocus"
-    :disabled="props.disabled || props.loading"
+    :disabled="computedDisabled || props.loading"
     :class="{
-      [`er-button--${props.size}`]: props.size,
-      [`er-button--${props.type}`]: props.type,
+      [`er-button--${computedSize}`]: computedSize,
+      [`er-button--${computedType}`]: computedType,
       'is-plain': props.plain,
       'is-round': props.round,
       'is-circle': props.circle,
       'is-loading': props.loading,
-      'is-disabled': props.disabled,
+      'is-disabled': computedDisabled,
     }"
     :is="props.tag"
     @click="(e:MouseEvent)=>{
