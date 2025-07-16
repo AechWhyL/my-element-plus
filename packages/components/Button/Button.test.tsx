@@ -1,7 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, test } from "vitest";
 import { mount } from "@vue/test-utils";
 
 import Button from "./Button.vue";
+import Icon from "../Icon/Icon.vue";
 
 describe("Button.vue", () => {
   // Props: type
@@ -68,4 +69,69 @@ describe("Button.vue", () => {
     await wrapper.trigger("click");
     expect(wrapper.emitted().click).toHaveLength(1);
   });
+
+  // icon button
+  test("icon button",
+    async () => {
+      const wrapper = mount(Button, {
+        props: {
+          icon: "house"
+        },
+        slots:{
+          default:"icon button"
+        },
+        global: {
+          stubs: ["ErIcon"],
+        }
+      })
+
+      const iconElement = wrapper.findComponent(Icon)
+      expect(iconElement.exists()).toBeTruthy()
+      expect(iconElement.attributes("icon")).toBe("house")
+    }
+  )
+
+  // Test click throttle
+  it.each([
+    ["withoutThrottle", false],
+    ["withThrottle", true],
+  ])(
+    "should emits a click event when the button is clicked %s",
+    async (_, withThrottle) => {
+      const clickSpy = vi.fn()
+      const warpper = mount(() => (
+        <Button
+          onClick={clickSpy}
+          useThrottle={withThrottle}
+          throttleDuration={500}
+        >
+        </Button>
+      ))
+      await warpper.get('button').trigger("click")
+      await warpper.get('button').trigger("click")
+      await warpper.get('button').trigger("click")
+      expect(clickSpy).toBeCalledTimes(withThrottle ? 1 : 3)
+    }
+  )
+
+  // Test loading status
+  it("should display loading icon and not emit click event when button is loading",
+    async () => {
+      const wrapper = mount(Button, {
+        props: {
+          loading: true
+        },
+        global: {
+          stubs: ["ErIcon"],
+        }
+      })
+      const iconElement = wrapper.findComponent(Icon)
+      expect(wrapper.find(".er-loading-icon").exists()).toBeTruthy()
+      expect(wrapper.find(".er-loading-icon").attributes("icon")).toBe("spinner")
+      expect(iconElement.exists()).toBeTruthy()
+      await wrapper.trigger("click")
+      expect(wrapper.emitted().click).toBeUndefined()
+    }
+  )
+
 });

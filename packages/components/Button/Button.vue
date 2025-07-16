@@ -3,7 +3,6 @@ import { throttle } from "lodash-es";
 import type { ButtonEmits, ButtonProps } from "./types";
 import ErIcon from "../Icon/Icon.vue";
 import { computed, ref, useSlots } from "vue";
-import type { CSSProperties } from "vue";
 
 defineOptions({
   name: "ErButton",
@@ -29,7 +28,7 @@ const handleBtnClickThrottled = throttle(
 );
 
 const iconStyle = computed(() => {
-  if ((props.icon) || (props.loading) && !!slots.default) {
+  if (!!slots.default) {
     return {
       ['margin-right']: "8px",
     };
