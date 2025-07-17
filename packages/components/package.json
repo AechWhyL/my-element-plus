@@ -1,24 +1,24 @@
 {
   "name": "@hyl-fake-element-plus/components",
   "version": "1.0.0",
-  "description": "",
+  "description": "Fake Element Plus Components",
   "main": "index.ts",
   "type": "module",
   "scripts": {
     "test": "vitest --coverage"
   },
   "keywords": [],
-  "author": "",
+  "author": "AechWhyL",
   "license": "ISC",
   "packageManager": "pnpm@10.12.4",
   "devDependencies": {
+    "@vitest/coverage-v8": "1.4.0",
     "@vue/test-utils": "^2.4.6",
     "jsdom": "^24.1.3"
   },
   "dependencies": {
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@popperjs/core": "^2.11.8",
-    "@vitest/coverage-v8": "1.4.0",
     "async-validator": "^4.2.5"
   }
 }

@@ -1,0 +1,16 @@
+.er-icon {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  fill: currentColor;
+  color: var(--er-icon-color);
+  font-style: normal;
+  line-height: 1;
+}
+
+@each $type in primary, info, success, warning, danger {
+  .er-icon--$(type) {
+    --er-icon-color: var(--er-color-$(type));
+  }
+}

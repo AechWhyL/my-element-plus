@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from "vue";
+import { computed } from "vue";
 import type { IconProps } from "./types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { omit } from "lodash-es";
@@ -33,9 +33,5 @@ const customStyle = computed(()=>{
 </template>
 
 <style scoped>
-.er-icon{
-    display: inline-block;
-    font-style: normal;
-    line-height: 1;
-}
+@import url("./style.css");
 </style>
