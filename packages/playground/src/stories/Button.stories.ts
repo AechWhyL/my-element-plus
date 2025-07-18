@@ -2,6 +2,7 @@ import type { ArgTypes, Meta, StoryObj } from "@storybook/vue3-vite";
 import { fn, within, userEvent, expect } from "storybook/test";
 
 import { ErButton, ErButtonGroup } from "hyl-fake-element-plus";
+import "hyl-fake-element-plus/dist/index.css"
 
 type Story = StoryObj<typeof ErButton> & { argTypes?: ArgTypes };
 
@@ -114,11 +115,7 @@ export const Group: Story & { args: { content1: string; content2: string } } = {
   args: {
     round: false,
     content1: "Button1",
-    content2: "Button3",
-    content3: "Button3",
-    content4: "Button4",
-    groupDisabled: false,
-    groupType: "primary"
+    content2: "Button3"
   },
   render: (args) => ({
     components: { ErButton, ErButtonGroup },

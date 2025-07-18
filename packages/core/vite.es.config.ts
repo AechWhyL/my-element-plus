@@ -3,26 +3,29 @@ import { defineConfig } from "vite";
 import vuePlugin from "@vitejs/plugin-vue";
 import dts from "vite-plugin-dts";
 
+const components = ["Button", "Icon"];
+
 export default defineConfig({
   plugins: [
     vuePlugin(),
     dts({
       tsconfigPath: resolve(__dirname, "tsconfig.build.json"),
-      outDir:"dist/types"
+      outDir: "dist/types",
     }),
   ],
   build: {
+    minify: true,
     emptyOutDir: true,
     outDir: resolve(__dirname, "dist/es"),
     lib: {
       entry: resolve(__dirname, "index.ts"),
       name: "HylFakeElementPlus",
       formats: ["es"],
-      fileName: "hyl-fake-element-plus",
+      fileName: "index.[format]",
     },
     rollupOptions: {
       external: [
-        "Vue",
+        "vue",
         "@fortawesome/vue-fontawesome",
         "@fortawesome/free-solid-svg-icons",
         "@fortawesome/fontawesome-svg-core",
@@ -30,10 +33,36 @@ export default defineConfig({
         "async-validator",
       ],
       output: {
-        exports: "named",
         assetFileNames(chunkInfo) {
           if (chunkInfo.name === "style.css") return "index.css";
           return chunkInfo.name as string;
+        },
+        manualChunks(id) {
+          // 优先捕获 Vite/Rollup 注入的虚拟模块
+          if (id.includes('\0')) {
+            return 'helpers';
+          }
+
+          const resolvedId = resolve(id);
+          if (resolvedId.includes("node_modules")) {
+            return "vendor";
+          }
+
+          if (resolvedId.includes(resolve(__dirname, `../utils`))) {
+            return "utils";
+          }
+
+          if (resolvedId.includes(resolve(__dirname, `../hooks`))) {
+            return "hooks";
+          }
+
+          for (const comp of components) {
+            if (
+              resolvedId.includes(resolve(__dirname, `../components/${comp}`))
+            ) {
+              return comp;
+            }
+          }
         },
       },
     },
