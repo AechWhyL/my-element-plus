@@ -11,7 +11,7 @@
     "docs:preview": "pnpm --filter @hyl-fake-element-plus/docs preview",
     "story": "pnpm --filter @hyl-fake-element-plus/playground storybook",
     "build": "pnpm --filter hyl-fake-element-plus build",
-    "publish": "pnpm --filter hyl-fake-element-plus publish",
+    "release": "pnpm --filter hyl-fake-element-plus release",
     "prepare": "husky"
   },
   "keywords": [],
