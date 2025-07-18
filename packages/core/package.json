@@ -1,6 +1,6 @@
 {
   "name": "hyl-fake-element-plus",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "vue3 component library",
   "main": "./dist/umd/index.umd.js",
   "module": "./dist/es/index.es.js",
