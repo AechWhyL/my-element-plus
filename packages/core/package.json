@@ -28,7 +28,7 @@
     "build-es": "vite build --config ./vite.es.config.ts",
     "move-style-to-root": "move-file dist/es/index.css dist/index.css",
     "clean": "rimraf dist",
-    "publish": "npm publish"
+    "publish": "release-it"
   },
   "keywords": [],
   "author": "",
