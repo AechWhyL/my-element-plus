@@ -2,8 +2,8 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "My-Element",
-  description: "Fake-Element",
+  title: "hyl-fake-element-plus",
+  description: "Fake-Element-plus",
   base:"/my-element-plus",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
