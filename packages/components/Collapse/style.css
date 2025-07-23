@@ -4,9 +4,11 @@
   --er-collapse-item-bg-color: var(--er-fill-color-blank);
   --er-collapse-item-text-color: var(--er-text-color-regular);
   --er-collapse-item-disabled-text-color: var(--er-text-color-disabled);
-  --er-collapse-content-bg-color: var(--er-fill-color);
+  --er-collapse-content-bg-color: var(--er-bg-color);
   --er-collapse-content-font-size: var(--er-font-size-base);
-  --er-collapse-border-color: var(--er-border);
+  --er-collapse-border-color: var(--er-border-color);
+  border-top: 1px solid var(--er-collapse-border-color);
+  border-bottom: 1px solid var(--er-collapse-border-color);
 }
 .er-collapse-item__header {
   display: flex;

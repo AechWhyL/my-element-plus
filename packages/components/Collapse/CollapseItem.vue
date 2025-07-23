@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ErIcon } from "../Icon";
+import CollapseItemTransition from "./CollapseItemTransition.vue";
 import { COLLAPSE_CTX_KEY } from "./constants";
 import type { CollapseEmits, CollapseItemProps } from "./types";
 import { computed, inject } from "vue";
@@ -19,7 +20,6 @@ const handleItemClick = () => {
   if (props.disabled) return;
   ctx?.handleItemClick(props.name);
 };
-
 </script>
 
 <template>
@@ -49,15 +49,19 @@ const handleItemClick = () => {
         </slot>
       </div>
     </div>
-    <div v-show="isActive" class="er-collapse-item__wrapper">
-      <div
-        class="er-collapse-item__content"
-        :id="`er-collapse-item__content-${name}`"
-      >
-        <slot></slot>
+    <CollapseItemTransition>
+      <div v-show="isActive" class="er-collapse-item__wrapper">
+        <div
+          class="er-collapse-item__content"
+          :id="`er-collapse-item__content-${name}`"
+        >
+          <slot></slot>
+        </div>
       </div>
-    </div>
+    </CollapseItemTransition>
   </div>
 </template>
 
-<style></style>
+<style scoped>
+@import url("./style.css");
+</style>
