@@ -7,5 +7,5 @@ import "@hyl-fake-element-plus/theme"
 library.add(fas)
 
 const installer = makeIntaller(components)
-export *  from "../components"
+export *  from "@hyl-fake-element-plus/components"
 export default installer

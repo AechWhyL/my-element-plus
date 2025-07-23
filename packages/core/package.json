@@ -26,7 +26,7 @@
     "build-only": "run-p build-umd build-es",
     "build-umd": "vite build --config ./vite.umd.config.ts",
     "build-es": "vite build --config ./vite.es.config.ts",
-    "move-style-to-root": "move-file dist/es/index.css dist/index.css",
+    "move-style-to-root": "move-file dist/umd/index.css dist/index.css",
     "clean": "rimraf dist",
     "release": "release-it"
   },

@@ -2,8 +2,22 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 import vuePlugin from "@vitejs/plugin-vue";
 import dts from "vite-plugin-dts";
+import { readdir } from "fs/promises";
 
-const components = ["Button", "Icon"];
+const getComponents = async () => {
+  const excludeNames = ["coverage", "node_modules"];
+  const files = await readdir(resolve(__dirname, "../components"), {
+    withFileTypes: true,
+  });
+  return files
+    .filter((file) => {
+      return file.isDirectory() && !excludeNames.includes(file.name);
+    })
+    .map((file) => {
+      return file.name;
+    });
+};
+const components = await getComponents();
 
 export default defineConfig({
   plugins: [
@@ -14,8 +28,9 @@ export default defineConfig({
     }),
   ],
   build: {
-    minify: true,
+    minify: false,
     emptyOutDir: true,
+    cssCodeSplit: true,
     outDir: resolve(__dirname, "dist/es"),
     lib: {
       entry: resolve(__dirname, "index.ts"),
@@ -34,13 +49,14 @@ export default defineConfig({
       ],
       output: {
         assetFileNames(chunkInfo) {
-          if (chunkInfo.name === "style.css") return "index.css";
+          if (chunkInfo.name && /\.css$/.test(chunkInfo.name))
+            return `styles/[name][extname]`;
           return chunkInfo.name as string;
         },
         manualChunks(id) {
           // 优先捕获 Vite/Rollup 注入的虚拟模块
-          if (id.includes('\0')) {
-            return 'helpers';
+          if (id.includes("\0")) {
+            return "helpers";
           }
 
           const resolvedId = resolve(id);

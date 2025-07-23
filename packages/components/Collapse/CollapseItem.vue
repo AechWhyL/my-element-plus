@@ -2,7 +2,7 @@
 import { ErIcon } from "../Icon";
 import CollapseItemTransition from "./CollapseItemTransition.vue";
 import { COLLAPSE_CTX_KEY } from "./constants";
-import type { CollapseEmits, CollapseItemProps } from "./types";
+import type { CollapseItemProps } from "./types";
 import { computed, inject } from "vue";
 
 defineOptions({

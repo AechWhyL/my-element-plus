@@ -17,6 +17,10 @@
     "jsxImportSource": "vue",
 
     "outDir": "",
+    "baseUrl": ".",
+    "paths": {
+      "@hyl-fake-element-plus/components": ["../components"]
+    },
 
     /* Linting */
     "strict": true,

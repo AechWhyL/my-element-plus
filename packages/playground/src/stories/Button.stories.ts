@@ -2,7 +2,8 @@ import type { ArgTypes, Meta, StoryObj } from "@storybook/vue3-vite";
 import { fn, within, userEvent, expect } from "storybook/test";
 
 import { ErButton, ErButtonGroup } from "hyl-fake-element-plus";
-import "hyl-fake-element-plus/dist/index.css"
+import "hyl-fake-element-plus/dist/es/styles/index.css"
+import "hyl-fake-element-plus/dist/es/styles/Button.css"
 
 type Story = StoryObj<typeof ErButton> & { argTypes?: ArgTypes };
 
@@ -34,7 +35,7 @@ const meta: Meta<typeof ErButton> = {
     throttleDuration: {
       control: "number",
     },
-    autofocus: {
+    autoFocus: {
       control: "boolean",
     },
     tag: {

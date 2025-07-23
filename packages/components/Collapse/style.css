@@ -31,6 +31,9 @@
     color: var(--er-collapse-item-disabled-text-color);
   }
 }
+.er-collapse-item__icon-wrapper {
+  transition: transform var(--er-transition-duration) ease-in-out;
+}
 .er-collapse-item__content {
   will-change: max-height;
   background-color: var(--er-collapse-content-bg-color);
