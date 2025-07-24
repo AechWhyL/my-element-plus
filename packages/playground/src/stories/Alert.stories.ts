@@ -1,5 +1,5 @@
 import type { Meta, StoryObj, ArgTypes } from "@storybook/vue3-vite";
-import { HAlert } from "hyl-fake-element-plus";
+import { HAlert, ErIcon, ErButton } from "hyl-fake-element-plus";
 import { fn } from "storybook/test";
 import "hyl-fake-element-plus/dist/es/styles/index.css";
 import "hyl-fake-element-plus/dist/es/styles/Alert.css";
@@ -87,6 +87,25 @@ export const DarkTheme: Story = {
       <HAlert title="Info Alert" type="info" effect="dark" />
       <HAlert title="Warning Alert" type="warning" effect="dark" />
       <HAlert title="Error Alert" type="error" effect="dark" />
+    `),
+  }),
+};
+
+export const CustomIcon: Story = {
+  name: "Custom Icon",
+  render: () => ({
+    components: { HAlert, ErIcon, ErButton },
+    template: container(`
+      <HAlert title="Custom Alert Icon" type="success" effect="dark">
+        <template #icon>
+          <ErIcon icon="thumbs-up" />
+        </template>
+      </HAlert>
+      <HAlert title="Custom Icon with Button" type="info" effect="dark">
+        <template #icon>
+          <ErButton circle icon="house"></ErButton>
+        </template>
+      </HAlert>
     `),
   }),
 };
