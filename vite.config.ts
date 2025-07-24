@@ -16,7 +16,21 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
-    include: ["./**/__test__/**/*.test.tsx"],
+    include: ["./**/__test__/**/*.test.tsx","./**/__test__/**/*.test.ts"],
+    coverage: {
+      provider: 'v8', // or 'v8'
+      exclude: [
+        'coverage/**',
+        'node_modules/**',
+        'packages/docs/**',
+        'packages/playground/**',
+        '**/__test__/**',
+        '**/*.stories.ts',
+        '**/*.config.*',
+        '.prettierrc.js',
+        'postcss.config.cjs'
+      ]
+    }
   },
 });
 
