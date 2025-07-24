@@ -1,8 +1,8 @@
 import { it, beforeAll, describe, test, vi, expect, type MockInstance, beforeEach, afterEach } from "vitest"
 import { mount, DOMWrapper, VueWrapper } from "@vue/test-utils"
 
-import Collapse from "@/Collapse/Collapse.vue"
-import CollapseItem from "@/Collapse/CollapseItem.vue"
+import Collapse from "@/components/Collapse/Collapse.vue"
+import CollapseItem from "@/components/Collapse/CollapseItem.vue"
 
 const onChange = vi.fn()
 

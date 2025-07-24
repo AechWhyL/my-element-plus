@@ -10,13 +10,13 @@ export default defineConfig({
   plugins: [vue(), vueJsx()],
   resolve: {
     alias: {
-      "@": resolve(__dirname),
+      '@': resolve(__dirname, 'packages')
     },
   },
   test: {
     globals: true,
     environment: "jsdom",
-    include: ["./__test__/**/*.test.tsx"],
+    include: ["./**/__test__/**/*.test.tsx"],
   },
 });
 

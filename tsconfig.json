@@ -16,11 +16,20 @@
     "jsx": "preserve",
     "jsxImportSource": "vue",
 
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["packages/*"]
+    },
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["packages/**/*.ts", "packages/**/*.tsx", "packages/**/*.vue"]
+  "include": [
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "packages/**/*.vue",
+  ]
 }
