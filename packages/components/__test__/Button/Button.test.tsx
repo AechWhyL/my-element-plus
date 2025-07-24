@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, test } from "vitest";
 import { mount } from "@vue/test-utils";
 
-import Button from "./Button.vue";
-import Icon from "../Icon/Icon.vue";
-import ButtonGroup from "./ButtonGroup.vue";
+import Button from "@/Button/Button.vue";
+import Icon from "@/Icon/Icon.vue";
+import ButtonGroup from "@/Button/ButtonGroup.vue";
 
 describe("Button.vue", () => {
   // Props: type

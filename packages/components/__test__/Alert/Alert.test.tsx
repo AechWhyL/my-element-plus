@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, test } from 'vitest'
 import { mount } from '@vue/test-utils'
-import Alert from './Alert.vue'
+import Alert from '@/Alert/Alert.vue'
 
 describe('Alert.vue', () => {
   it('should render title and description correctly', () => {
@@ -118,5 +118,35 @@ describe('Alert.vue', () => {
     expect(wrapper.find('.custom-icon').exists()).toBe(true)
     // 默认图标不应该被渲染
     expect(wrapper.find('.header-icon.default-icon').exists()).toBe(false)
+  })
+
+  it("同时传递description属性与description插槽时，description插槽优先级更高", () => {
+    const wrapper = mount(Alert, {
+      props: { title: 'Test', description: 'Prop Description' },
+      slots: {
+        description: '<i data-test-desc>Slot Description</i>',
+      },
+    })
+    expect(wrapper.find('[data-test-desc]').text()).toBe('Slot Description')
+  })
+
+  it('同时存在默认插槽与description插槽时，渲染description插槽', () => {
+    const wrapper = mount(Alert, {
+      props: { title: 'Test' },
+      slots: {
+        default: 'Default slot content',
+        description: '<i data-test-desc>Description</i>',
+      },
+    })
+    expect(wrapper.find('[data-test-desc]').text()).toBe('Description')
+  })
+
+  it("点击关闭按钮时，销毁组件", async () => {
+    const wrapper = mount(Alert, {
+      props: { title: 'Test', closable: true },
+    })
+    const closeButton = wrapper.find('.h-alert__close')
+    await closeButton.trigger('click')
+    expect(wrapper.find('.h-alert').exists()).toBe(false)
   })
 })
