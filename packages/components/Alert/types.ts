@@ -6,7 +6,6 @@ export interface AlertProps {
   showIcon?: boolean;
   closable?: boolean;
   center?: boolean;
-  duration?: number;
 }
 
 export type AlertType = "success" | "info" | "warning" | "error";
@@ -16,3 +15,10 @@ export interface AlertEmits {
   (e: "update:modelValue", value: boolean): void;
 }
 
+export interface AlertSlots {
+  title?: (props: {}) => any;
+  description?: (props: {}) => any;
+  close?: (props: {}) => any;
+  icon?: (props: {}) => any;
+  default?: (props: {}) => any;
+}
