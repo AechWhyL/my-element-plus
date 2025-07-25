@@ -52,6 +52,7 @@
     "@hyl-fake-element-plus/utils": "workspace:*",
     "hyl-fake-element-plus": "workspace:*",
     "lodash-es": "^4.17.21",
-    "vue": "^3.5.17"
+    "vue": "^3.5.17",
+    "@popperjs/core": "^2.11.8"
   }
 }

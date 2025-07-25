@@ -11,12 +11,9 @@
   "author": "AechWhyL",
   "license": "ISC",
   "packageManager": "pnpm@10.12.4",
-  "devDependencies": {
-
-  },
+  "devDependencies": {},
   "dependencies": {
     "@fortawesome/vue-fontawesome": "^3.0.8",
-    "@popperjs/core": "^2.11.8",
     "async-validator": "^4.2.5"
   }
 }
