@@ -18,10 +18,6 @@ const mockComponent = {
 
 const mockUnnamedComponent = {};
 
-const mockPluginWithName: Plugin = {
-  install: vi.fn(),
-  name: "MockPluginWithName",
-};
 
 describe("makeInstaller", () => {
   it("makeInstaller函数应该返回一个函数", () => {

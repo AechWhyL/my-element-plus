@@ -30,7 +30,8 @@ export default defineConfig({
         '.prettierrc.js',
         'postcss.config.cjs'
       ]
-    }
+    },
+    setupFiles: [resolve(__dirname, 'vite.test.setup.ts')]
   },
 });
 
