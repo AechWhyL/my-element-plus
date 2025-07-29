@@ -16,17 +16,19 @@ import {
 } from "vue";
 import { fromPairs } from "lodash-es";
 
+export type PartialOptions = Partial<Options>;
+
 /**
  * @description 获取popper.js计算后的style，自行赋给元素,比如延迟等
  * @param referenceRef 触发元素的ref
  * @param popperContentRef 弹出元素的ref
  * @param options
- * @returns
+ * @returns {styles: { popper: CSSProperties; arrow: CSSProperties }, attributes: { popper: Record<string, any>; arrow: Record<string, any> }}
  */
 export const usePopper = (
   referenceRef: Ref<HTMLElement>,
   popperContentRef: Ref<HTMLElement>,
-  options: Partial<Options> | Options = {}
+  options: Ref<PartialOptions> | PartialOptions = {}
 ) => {
   const StateModifier: Modifier<"getState", {}> = {
     name: "getState",
@@ -54,7 +56,7 @@ export const usePopper = (
   });
 
   const computedOpts = computed<Options>(() => {
-    const { placement, strategy, modifiers } = options;
+    const { placement, strategy, modifiers } = unref(options);
     return {
       placement: placement || "bottom",
       strategy: strategy || "absolute",
@@ -86,22 +88,30 @@ export const usePopper = (
     { deep: true }
   );
 
-  watch([referenceRef, popperContentRef], ([reference, popperContent]) => {
-    destory();
-    if (!reference || !popperContent) {
-      return;
+  watch(
+    [referenceRef, popperContentRef],
+    ([reference, popperContent]) => {
+      destory();
+      if (!reference || !popperContent) {
+        return;
+      }
+      popperInstanceRef.value = createPopper(
+        reference,
+        popperContent,
+        computedOpts.value
+      );
+    },
+    {
+      immediate: true,
     }
-    popperInstanceRef.value = createPopper(reference, popperContent, {
-      ...options,
-      modifiers: [StateModifier, ...(options.modifiers || [])],
-    });
-  });
+  );
 
   onBeforeUnmount(() => {
     destory();
   });
 
   return {
+    state: computed(() => unref(pickedStates)),
     styles: computed(() => unref(pickedStates).styles),
     attributes: computed(() => unref(pickedStates).attributes),
     popperInstanceRef: computed(() => unref(popperInstanceRef)),
