@@ -1,5 +1,6 @@
 import type { InjectionKey, Ref } from "vue";
 import type { Instance } from "@popperjs/core";
+
 export interface PopperContext {
   triggerRef: Ref<HTMLElement>;
   contentRef: Ref<HTMLElement>;

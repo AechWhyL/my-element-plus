@@ -1,6 +1,6 @@
-import type { Ref } from "vue";
+import type Popper from "./Popper.vue";
 
-export interface TriggerProps {
+export interface PopperTriggerProps {
   onClick?: (e: Event) => void;
   onContextmenu?: (e: Event) => void;
   onMouseenter?: (e: Event) => void;
@@ -9,5 +9,7 @@ export interface TriggerProps {
   onBlur?: (e: Event) => void;
 
   virtualTrigger?: boolean;
-  virtualRef?: Ref<HTMLElement>;
+  virtualRef?: HTMLElement;
 }
+
+export type PopperInstance = InstanceType<typeof Popper>;

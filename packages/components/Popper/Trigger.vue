@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject, onMounted, watch, unref, onBeforeUnmount } from "vue";
 import { POPPER_CTX_KEY } from "./Popper";
-import type { TriggerProps } from "./Trigger";
+import type { PopperTriggerProps } from "./Trigger";
 
 defineOptions({
   name: "HPopperTrigger",
@@ -9,7 +9,7 @@ defineOptions({
 
 const { triggerRef } = inject(POPPER_CTX_KEY, undefined)!;
 
-const props = defineProps<TriggerProps>();
+const props = defineProps<PopperTriggerProps>();
 
 const EVENT_NAMES = [
     "onClick",
@@ -27,6 +27,7 @@ onMounted(() => {
   watch(
     () => props.virtualRef,
     (virtualRef) => {
+      console.log(virtualRef)
       if (virtualRef) {
         triggerRef.value = unref(virtualRef);
       }
@@ -46,6 +47,8 @@ onMounted(() => {
         }
       })
     }
+  },{
+    immediate:true
   })
 
   onBeforeUnmount(()=>{
@@ -59,10 +62,14 @@ onMounted(() => {
     }
   })
 });
+
+defineExpose({
+    triggerRef
+})
 </script>
 
 <template>
-  <div v-if="!virtualTrigger" ref="triggerRef" v-bind="$attrs">
+  <div v-if="!virtualTrigger" ref="triggerRef" v-bind="$attrs" tabindex="0">
     <slot></slot>
   </div>
 </template>

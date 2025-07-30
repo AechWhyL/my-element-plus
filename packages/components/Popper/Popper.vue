@@ -12,18 +12,15 @@ const popperJsInstance = ref<PopperInstance>();
 const contentRef = ref<HTMLElement>();
 
 const ctx = {
-    triggerRef,
-    popperJsInstance,
-    contentRef,
-} as PopperContext
+  triggerRef,
+  popperJsInstance,
+  contentRef,
+} as PopperContext;
 
-provide(POPPER_CTX_KEY,ctx)
-defineExpose(ctx)
-
+provide(POPPER_CTX_KEY, ctx);
+defineExpose<PopperContext>(ctx);
 </script>
 
 <template>
   <slot></slot>
 </template>
-
-<style></style>

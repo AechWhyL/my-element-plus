@@ -5,7 +5,7 @@ import dts from "vite-plugin-dts";
 import { readdir } from "fs/promises";
 
 const getComponents = async () => {
-  const excludeNames = ["coverage", "node_modules"];
+  const excludeNames = ["coverage", "node_modules","__test__"];
   const files = await readdir(resolve(__dirname, "../components"), {
     withFileTypes: true,
   });
@@ -18,6 +18,7 @@ const getComponents = async () => {
     });
 };
 const components = await getComponents();
+console.log(components)
 
 export default defineConfig({
   plugins: [
