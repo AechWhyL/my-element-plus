@@ -1,6 +1,6 @@
-import { computed, onMounted, ref, toRef, unref, watch, type Ref } from "vue";
+import { computed, ref } from "vue";
 import type { TooltipProps } from "../types";
-import { triggerDelay, triggerWhen } from "../utils";
+import { triggerDelay } from "../utils";
 
 export const useTooltip = (props: TooltipProps) => {
   const visible = ref(false);

@@ -1,7 +1,7 @@
 import { useTooltip } from "@/components/Tooltip/composables/useTooltip";
 import type { TooltipProps } from "@/components/Tooltip/types";
-import { describe, expect, it, test, afterEach, vi } from "vitest";
-import { reactive, nextTick, unref, defineComponent, type Ref } from "vue";
+import { describe, expect, it, test, afterEach } from "vitest";
+import { reactive, nextTick, unref } from "vue";
 
 const defaultProps: TooltipProps = {
   offset: 12,
@@ -17,34 +17,6 @@ const defaultProps: TooltipProps = {
 
 const props = reactive<TooltipProps>(defaultProps);
 
-const TestComponent = defineComponent({
-  props: {
-    enterable: {
-      type: Boolean,
-      default: true,
-    },
-    visible: {
-      type: Boolean,
-      default: undefined,
-    },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-    showDelay: Number,
-    hideDelay: Number,
-  },
-
-  setup(props) {
-    const tooltipApi = useTooltip(props as TooltipProps);
-    return {
-      ...tooltipApi,
-    };
-  },
-  render() {
-    return "<div/>";
-  },
-});
 
 describe("useTooltip", () => {
   afterEach(() => {

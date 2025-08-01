@@ -2,9 +2,9 @@ import HTooltip from "@/components/Tooltip/Tooltip.vue";
 import HPopperContent from "@/components/Popper/Content.vue";
 import HTrigger from "@/components/Tooltip/Trigger.vue";
 import type { TooltipProps } from "@/components/Tooltip/types";
-import { mount, VueWrapper } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 import { test, describe, it, expect, vi, afterEach, beforeEach } from "vitest";
-import { nextTick, reactive, ref } from "vue";
+import { nextTick } from "vue";
 
 const testContent = "testContent";
 const testTriggerChild = "click me";

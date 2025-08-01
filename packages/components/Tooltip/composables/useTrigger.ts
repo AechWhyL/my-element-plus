@@ -1,6 +1,6 @@
 import type { TooltipTriggerProps } from "../Trigger";
 import { TOOLTIP_CTX_KEY } from "../contants";
-import { inject, onMounted, ref, toRef, unref } from "vue";
+import { inject, onMounted, ref, toRef } from "vue";
 import { triggerWhen } from "../utils";
 import type { PopperTriggerInstance } from "../../Popper/Trigger";
 import { useClickOutside } from "@hyl-fake-element-plus/hooks";

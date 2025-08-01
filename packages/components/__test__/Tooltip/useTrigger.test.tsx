@@ -1,6 +1,6 @@
-import { vi, test, expect, describe, beforeEach, afterEach, it, type Mock } from "vitest";
+import { vi, test, expect, describe, beforeEach, afterEach } from "vitest";
 import { useTrigger } from "@/components/Tooltip/composables/useTrigger";
-import { defineComponent, nextTick, ref, triggerRef, unref } from "vue";
+import { defineComponent, nextTick, ref } from "vue";
 import { mount } from "@vue/test-utils";
 import type { TooltipProps } from "../../Tooltip/types";
 import { TOOLTIP_CTX_KEY } from "../../Tooltip/contants";
