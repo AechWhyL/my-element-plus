@@ -1,0 +1,94 @@
+$arrow-map: (
+  "top": bottom,
+  "right": left,
+  "bottom": top,
+  "left": right,
+);
+$arrow-border-map: (
+  "top": (
+    bottom,
+    left,
+  ),
+  "right": (
+    left,
+    top,
+  ),
+  "bottom": (
+    top,
+    right,
+  ),
+  "left": (
+    right,
+    bottom,
+  ),
+);
+
+.h-tooltip-trigger {
+  display: inline-block;
+}
+
+.h-tooltip-content {
+  display: inline-block;
+  padding: 12px 16px;
+  --h-tooltip-content-border-radius: var(--er-border-radius-base);
+  --h-tooltip-content-bg-color: var(--er-color-black);
+  --h-tooltip-color: var(--er-color-white);
+  --h-tooltip-arrow-color: var(--h-tooltip-content-bg-color);
+  --h-tooltip-border-color: var(--h-tooltip-content-bg-color);
+  --h-tooltip-border-width: var(--er-border-width);
+  --h-tooltip-border-style: var(--er-border-style);
+
+  border-radius: var(--h-tooltip-content-border-radius);
+  border: var(--h-tooltip-border-width) var(--h-tooltip-border-style)
+    var(--h-tooltip-border-color);
+  background-color: var(--h-tooltip-content-bg-color);
+  color: var(--h-tooltip-color);
+
+  &.light {
+    --h-tooltip-content-bg-color: var(--er-color-white);
+    --h-tooltip-color: var(--er-color-black);
+    --h-tooltip-border-color: var(--er-border-color);
+  }
+}
+
+.h-tooltip-content .disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.h-tooltip-arrow,
+.h-tooltip-arrow::before {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: inherit;
+}
+
+.h-tooltip-arrow {
+  visibility: hidden;
+}
+
+@each $placement, $position-property in $arrow-map {
+  .h-tooltip-content[data-popper-placement^="#{$placement}"] .h-tooltip-arrow {
+    #{$position-property}: -4px;
+  }
+}
+
+@each $placement, $border-positions in $arrow-border-map {
+  .h-tooltip-content[data-popper-placement^="#{$placement}"]
+    .h-tooltip-arrow::before {
+    @each $postion in $border-positions {
+      border-#{$postion}: var(--h-tooltip-border-width)
+        var(--h-tooltip-border-style)
+        var(--h-tooltip-border-color);
+    }
+  }
+}
+
+.h-tooltip-arrow::before {
+  background-color: var(--h-tooltip-arrow-color);
+
+  visibility: visible;
+  content: "";
+  transform: rotate(-45deg);
+}

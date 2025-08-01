@@ -1,0 +1,87 @@
+.h-alert {
+  --h-alert-border-radius: var(--er-border-radius-base);
+  --h-alert-header-min-height: 40px;
+  --h-alert-width: 300px;
+  --h-alert-title-font-weight: 600;
+  --h-alert-text-color: var(--er-color-primary);
+  --h-alert-bg-color: var(--er-color-primary-light-9);
+
+  border-radius: var(--h-alert-border-radius);
+  color: var(--h-alert-text-color);
+  background-color: var(--h-alert-bg-color);
+
+  &.is-center {
+    --h-alert-center: center;
+  }
+
+  &.h-alert--light {
+    &.h-alert--success {
+      --h-alert-text-color: var(--er-color-success);
+      --h-alert-bg-color: var(--er-color-success-light-9);
+    }
+    &.h-alert--info {
+      --h-alert-text-color: var(--er-color-info);
+      --h-alert-bg-color: var(--er-color-info-light-9);
+    }
+    &.h-alert--warning {
+      --h-alert-text-color: var(--er-color-warning);
+      --h-alert-bg-color: var(--er-color-warning-light-9);
+    }
+    &.h-alert--error {
+      --h-alert-text-color: var(--er-color-danger);
+      --h-alert-bg-color: var(--er-color-danger-light-9);
+    }
+  }
+
+  &.h-alert--dark {
+    --h-alert-text-color: var(--er-color-white);
+    &.h-alert--success {
+      --h-alert-bg-color: var(--er-color-success);
+    }
+    &.h-alert--info {
+      --h-alert-bg-color: var(--er-color-info);
+    }
+    &.h-alert--warning {
+      --h-alert-bg-color: var(--er-color-warning);
+    }
+    &.h-alert--error {
+      --h-alert-bg-color: var(--er-color-danger);
+    }
+  }
+}
+
+.h-alert__header {
+  display: flex;
+  align-items: center;
+  min-height: var(--h-alert-header-min-height);
+  padding: 0 16px;
+}
+
+.h-alert__title-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: var(--h-alert-center, start);
+  flex: 1;
+}
+
+.h-alert__title {
+  font-size: var(--er-font-size-medium);
+  font-weight: var(--h-alert-title-font-weight);
+}
+
+:deep(.h-alert__icon) {
+  margin-right: 6px;
+}
+
+.h-alert__close {
+  cursor: pointer;
+  float: right;
+}
+
+.h-alert__description-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: var(--h-alert-center, start);
+  padding: 0 16px 12px;
+  font-size: var(--er-font-size-base);
+}

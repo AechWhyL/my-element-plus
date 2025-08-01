@@ -29,7 +29,7 @@
   
   @each $val, $color in var(--colors) {
     --er-color-$(val): $(color);
-    @for $i from 3 to 9 {
+    @for $i from 2 to 9 {
       --er-color-$(val)-light-$(i): mix(#fff, $(color), 0.$(i));
     }
     --er-color-$(val)-dark-2: mix(#000, $(color), 0.2);

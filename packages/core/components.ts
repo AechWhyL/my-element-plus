@@ -3,7 +3,10 @@ import {
   ErButtonGroup,
   ErCollapse,
   ErCollapseItem,
-} from "../components";
+  HAlert,
+  ErIcon,
+  HTooltip,
+} from "@hyl-fake-element-plus/components";
 import type { Plugin } from "vue";
 
 export default [
@@ -11,4 +14,7 @@ export default [
   ErButtonGroup,
   ErCollapse,
   ErCollapseItem,
+  HAlert,
+  ErIcon,
+  HTooltip,
 ] as Plugin[];
