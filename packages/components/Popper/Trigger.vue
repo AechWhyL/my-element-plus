@@ -64,7 +64,7 @@ onMounted(() => {
 });
 
 defineExpose({
-    triggerRef
+    triggerRef:triggerRef
 })
 </script>
 

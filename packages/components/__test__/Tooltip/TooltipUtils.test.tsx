@@ -27,6 +27,10 @@ describe("TooltipUtils/triggerWhen", () => {
     trigger.value = "hover";
     newFn(e);
     expect(fn).toHaveBeenCalledTimes(1);
+
+    const hoverFn = triggerWhen(["hover", "focus"], trigger, fn);
+    hoverFn(e);
+    expect(fn).toHaveBeenCalledTimes(2);
   });
   test("can change behavior", () => {
     const e = new Event("click");

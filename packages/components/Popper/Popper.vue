@@ -7,7 +7,7 @@ defineOptions({
   name: "HPopper",
 });
 
-const triggerRef = ref<HTMLElement>();
+const triggerRef = ref<HTMLElement | null>(null);
 const popperJsInstance = ref<PopperInstance>();
 const contentRef = ref<HTMLElement>();
 

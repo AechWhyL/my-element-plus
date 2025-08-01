@@ -11,8 +11,8 @@ export type TooltipProps = PopperContentProps &
     content?: string;
     visible?: boolean;
 
-    virtualRef: HTMLElement;
-    virtualTrigger: boolean;
+    virtualRef?: HTMLElement;
+    virtualTrigger?: boolean;
   };
 
 export type TooltipEmits = {

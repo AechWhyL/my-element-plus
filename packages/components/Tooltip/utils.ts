@@ -1,15 +1,19 @@
 import { unref, type Ref } from "vue";
 import type { TooltipTriggerType } from "./Trigger";
+import { isArray } from "lodash-es";
 
 export const isCorrectTrigger = (
-  when: TooltipTriggerType,
+  when: TooltipTriggerType | TooltipTriggerType[],
   trigger: TooltipTriggerType
 ) => {
+  if (isArray(when)) {
+    return when.includes(trigger);
+  }
   return when === trigger;
 };
 
 export const triggerWhen = (
-  when: TooltipTriggerType,
+  when: TooltipTriggerType | TooltipTriggerType[],
   triggerRef: Ref<TooltipTriggerType>,
   handler: (e: Event) => void
 ) => {

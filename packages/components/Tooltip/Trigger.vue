@@ -1,30 +1,19 @@
 <script setup lang="ts">
-import { inject, toRef } from "vue";
-import { TOOLTIP_CTX_KEY } from "./contants";
-import { triggerWhen } from "./utils";
 import type { TooltipTriggerProps } from "./Trigger";
 import HPopperTrigger from "../Popper/Trigger.vue";
+import { useTrigger } from "./composables/useTrigger";
 
 const props = withDefaults(defineProps<TooltipTriggerProps>(), {
   trigger: "hover",
 });
 
-const { onOpen, onHide, onToggle, virtualRef, virtualTrigger } = inject(
-  TOOLTIP_CTX_KEY,
-  undefined
-)!;
+const { onClick, onMouseEnter, onMouseLeave, onFocus, onBlur, virtualRef, virtualTrigger } = useTrigger(props);
 
-const trigger = toRef(props, "trigger");
-
-const onClick = triggerWhen("click", trigger, onToggle);
-const onMouseEnter = triggerWhen("hover", trigger, onOpen);
-const onMouseLeave = triggerWhen("hover", trigger, onHide);
-const onFocus = triggerWhen("focus", trigger, onOpen);
-const onBlur = triggerWhen("focus", trigger, onHide);
 </script>
 
 <template>
   <HPopperTrigger
+    ref="popperTriggerRef"
     class="h-tooltip-trigger"
     :virtual-ref="virtualRef"
     :virtual-trigger="virtualTrigger"
