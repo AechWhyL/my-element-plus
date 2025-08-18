@@ -1,0 +1,79 @@
+.h-message {
+  position: fixed;
+  width: fit-content;
+  max-width: calc(100% - 32px);
+  padding: 12px 16px;
+  margin: 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  background: var(--er-bg-color);
+  border: 1px solid var(--er-border-color-light);
+  color: var(--er-text-color-regular);
+  font-size: var(--er-font-size-base);
+  line-height: 1.4;
+  z-index: 2000;
+  
+  // 使用Scss each生成各type下的样式
+  $types: (success, info, warning, error);
+  
+  @each $type in $types {
+    &--#{$type} {
+      @if $type == 'success' {
+        border-color: var(--er-color-success);
+        background-color: var(--er-color-success-light-9);
+        color: var(--er-color-success);
+      } @else if $type == 'info' {
+        border-color: var(--er-color-info);
+        background-color: var(--er-color-info-light-9);
+        color: var(--er-color-info);
+      } @else if $type == 'warning' {
+        border-color: var(--er-color-warning);
+        background-color: var(--er-color-warning-light-9);
+        color: var(--er-color-warning);
+      } @else if $type == 'error' {
+        border-color: var(--er-color-danger);
+        background-color: var(--er-color-danger-light-9);
+        color: var(--er-color-danger);
+      }
+    }
+  }
+  
+  // 效果样式
+  &--light {
+    // light效果保持默认样式
+  }
+  
+  &--dark {
+    @each $type in $types {
+      &.h-message--#{$type} {
+        @if $type == 'success' {
+          background-color: var(--er-color-success);
+          color: var(--er-color-white);
+        } @else if $type == 'info' {
+          background-color: var(--er-color-info);
+          color: var(--er-color-white);
+        } @else if $type == 'warning' {
+          background-color: var(--er-color-warning);
+          color: var(--er-color-white);
+        } @else if $type == 'error' {
+          background-color: var(--er-color-danger);
+          color: var(--er-color-white);
+        }
+      }
+    }
+  }
+  
+  &__content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    word-break: break-word;
+  }
+  
+  &__icon {
+    flex-shrink: 0;
+    margin-top: 1px;
+    margin-right: 8px;
+    font-size: var(--er-font-size-medium);
+  }
+}

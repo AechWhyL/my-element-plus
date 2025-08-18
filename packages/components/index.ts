@@ -4,3 +4,4 @@ export * from "./Alert";
 export * from "./Icon";
 export * from "./Tooltip";
 export * from "./Modal";
+export * from "./Message";

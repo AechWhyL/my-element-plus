@@ -13,11 +13,14 @@ export const makeIntaller = (components:Plugin[])=>{
     return installer
 }
 
-export const withInstall = <T>(component:T)=>{
+export const withInstall = <T>(component:T,install?:(App:App)=>void)=>{
+    if(install){
+        (component as SFCWithInstall<T>).install = install
+    }else{
     (component as SFCWithInstall<T>).install = (app:App)=>{
         const name = (component as any).name || "UnnamedComponent" 
         app.component(name,component as SFCWithInstall<T>)
-    }
+    }}
 
     return component as SFCWithInstall<T>
 }

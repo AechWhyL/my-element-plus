@@ -6,6 +6,7 @@ import {
   HAlert,
   ErIcon,
   HTooltip,
+  HMessage,
 } from "@hyl-fake-element-plus/components";
 import type { Plugin } from "vue";
 
@@ -17,4 +18,5 @@ export default [
   HAlert,
   ErIcon,
   HTooltip,
+  HMessage,
 ] as Plugin[];

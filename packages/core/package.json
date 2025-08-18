@@ -37,7 +37,5 @@
   "dependencies": {
     "@hyl-fake-element-plus/components": "workspace:*"
   },
-  "devDependencies": {
-    "vite-plugin-dts": "^3.9.1"
-  }
+  "devDependencies": {}
 }
