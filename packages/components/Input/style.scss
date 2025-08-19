@@ -1,0 +1,111 @@
+// Input组件样式
+.h-input-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  
+  // 尺寸变体
+  &--large {
+    .h-input {
+      height: var(--h-input-height-large, 40px);
+      font-size: var(--h-input-font-size-large, 16px);
+    }
+  }
+  
+  &--default {
+    .h-input {
+      height: var(--h-input-height-default, 32px);
+      font-size: var(--h-input-font-size, 14px);
+    }
+  }
+  
+  &--small {
+    .h-input {
+      height: var(--h-input-height-small, 24px);
+      font-size: var(--h-input-font-size-small, 12px);
+    }
+  }
+  
+  // 状态样式
+  &.is-focused {
+    .h-input {
+      border-color: var(--h-input-border-color-focus, #409eff);
+    }
+  }
+  
+  &.is-disabled {
+    .h-input {
+      background-color: #f5f7fa;
+      border-color: #e4e7ed;
+      color: #c0c4cc;
+      cursor: not-allowed;
+    }
+  }
+  
+  &.is-readonly {
+    .h-input {
+      background-color: #f5f7fa;
+      cursor: default;
+    }
+  }
+  
+  &.is-round {
+    .h-input {
+      border-radius: 20px;
+    }
+  }
+}
+
+.h-input {
+  width: 100%;
+  padding: 0 12px;
+  border: 1px solid var(--h-input-border-color, #dcdfe6);
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  
+  &:hover {
+    border-color: var(--h-input-border-color-hover, #c0c4cc);
+  }
+  
+  &:focus {
+    border-color: var(--h-input-border-color-focus, #409eff);
+  }
+  
+  &::placeholder {
+    color: #c0c4cc;
+  }
+  
+  &.is-disabled {
+    background-color: #f5f7fa;
+    border-color: #e4e7ed;
+    color: #c0c4cc;
+    cursor: not-allowed;
+  }
+  
+  &.is-readonly {
+    background-color: #f5f7fa;
+    cursor: default;
+  }
+}
+
+// 清除按钮和密码切换按钮
+.h-input__clear,
+.h-input__password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #c0c4cc;
+  font-size: 14px;
+  
+  &:hover {
+    color: #909399;
+  }
+}
+
+.h-input__password-toggle {
+  right: 32px;
+}
