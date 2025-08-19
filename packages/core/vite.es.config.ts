@@ -18,7 +18,7 @@ const getComponents = async () => {
     });
 };
 const components = await getComponents();
-console.log(components)
+console.log("found components:", components)
 
 export default defineConfig({
   plugins: [
@@ -29,7 +29,7 @@ export default defineConfig({
     }),
   ],
   build: {
-    minify: false,
+    minify: true,
     emptyOutDir: true,
     cssCodeSplit: true,
     outDir: resolve(__dirname, "dist/es"),

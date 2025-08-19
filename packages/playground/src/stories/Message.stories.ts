@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { within, userEvent } from "storybook/test";
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 
-import { HMessage } from "hyl-fake-element-plus";
+import { HMessage, type MessageInstance } from "hyl-fake-element-plus";
 import "hyl-fake-element-plus/dist/es/styles/index.css";
 import "hyl-fake-element-plus/dist/es/styles/Message.css";
 
@@ -13,36 +13,37 @@ const MessageDemo = defineComponent({
     type: {
       type: String,
       default: "info",
-      validator: (value: string) => ["success", "info", "warning", "error"].includes(value)
+      validator: (value: string) =>
+        ["success", "info", "warning", "error"].includes(value),
     },
     message: {
       type: String,
-      default: "这是一条消息"
+      default: "这是一条消息",
     },
     duration: {
       type: Number,
-      default: 3000
+      default: 3000,
     },
     effect: {
       type: String,
       default: "light",
-      validator: (value: string) => ["dark", "light"].includes(value)
+      validator: (value: string) => ["dark", "light"].includes(value),
     },
     icon: {
       type: String,
-      default: ""
+      default: "",
     },
     customClass: {
       type: String,
-      default: ""
+      default: "",
     },
     groupConfig: {
       type: Object,
       default: () => ({
         enabled: false,
-        groupBy: undefined
-      })
-    }
+        groupBy: undefined,
+      }),
+    },
   },
   setup(props) {
     const showMessage = () => {
@@ -52,7 +53,7 @@ const MessageDemo = defineComponent({
         duration: props.duration,
         effect: props.effect,
         icon: props.icon,
-        customClass: props.customClass
+        customClass: props.customClass,
       });
     };
 
@@ -81,23 +82,23 @@ const MessageDemo = defineComponent({
   methods: {
     getButtonColor(type: string) {
       const colors = {
-        success: '#67c23a',
-        info: '#409eff',
-        warning: '#e6a23c',
-        error: '#f56c6c'
+        success: "#67c23a",
+        info: "#409eff",
+        warning: "#e6a23c",
+        error: "#f56c6c",
       };
-      return colors[type as keyof typeof colors] || '#409eff';
+      return colors[type as keyof typeof colors] || "#409eff";
     },
     getTypeText(type: string) {
       const texts = {
-        success: '成功',
-        info: '信息',
-        warning: '警告',
-        error: '错误'
+        success: "成功",
+        info: "信息",
+        warning: "警告",
+        error: "错误",
       };
-      return texts[type as keyof typeof texts] || '信息';
-    }
-  }
+      return texts[type as keyof typeof texts] || "信息";
+    },
+  },
 });
 
 type Story = StoryObj<typeof MessageDemo>;
@@ -194,11 +195,13 @@ export const MultipleTypes: Story = {
   render: () => ({
     components: { MessageDemo },
     setup() {
-      const showSuccess = () => HMessage({ type: "success", message: "成功消息" });
+      const showSuccess = () =>
+        HMessage({ type: "success", message: "成功消息" });
       const showInfo = () => HMessage({ type: "info", message: "信息消息" });
-      const showWarning = () => HMessage({ type: "warning", message: "警告消息" });
+      const showWarning = () =>
+        HMessage({ type: "warning", message: "警告消息" });
       const showError = () => HMessage({ type: "error", message: "错误消息" });
-      
+
       return { showSuccess, showInfo, showWarning, showError };
     },
     template: `
@@ -239,72 +242,72 @@ export const MessageGrouping: Story = {
     setup() {
       // 基础分组消息 - 相同内容的消息会被分组
       const showBasicGrouping = () => {
-        HMessage({ 
-          type: "info", 
-          message: "相同内容的消息会被分组", 
+        HMessage({
+          type: "info",
+          message: "相同内容的消息会被分组",
           duration: 4000,
-          groupConfig: { enabled: true }
+          groupConfig: { enabled: true },
         });
         setTimeout(() => {
-          HMessage({ 
-            type: "info", 
-            message: "相同内容的消息会被分组", 
+          HMessage({
+            type: "info",
+            message: "相同内容的消息会被分组",
             duration: 4000,
-            groupConfig: { enabled: true }
+            groupConfig: { enabled: true },
           });
         }, 500);
         setTimeout(() => {
-          HMessage({ 
-            type: "info", 
-            message: "相同内容的消息会被分组", 
+          HMessage({
+            type: "info",
+            message: "相同内容的消息会被分组",
             duration: 4000,
-            groupConfig: { enabled: true }
+            groupConfig: { enabled: true },
           });
         }, 1000);
       };
 
       // 自定义分组依据 - 根据消息类型分组
       const showTypeGrouping = () => {
-        HMessage({ 
-          type: "success", 
-          message: "成功消息1", 
+        HMessage({
+          type: "success",
+          message: "成功消息1",
           duration: 4000,
-          groupConfig: { 
+          groupConfig: {
             enabled: true,
-            groupBy: (instance) => instance.config.type
-          }
+            groupBy: (instance) => instance.config.type,
+          },
         });
         setTimeout(() => {
-          HMessage({ 
-            type: "success", 
-            message: "成功消息2", 
+          HMessage({
+            type: "success",
+            message: "成功消息2",
             duration: 4000,
-            groupConfig: { 
+            groupConfig: {
               enabled: true,
-              groupBy: (instance) => instance.config.type
-            }
+              groupBy: (instance) => instance.config.type,
+            },
           });
         }, 300);
         setTimeout(() => {
-          HMessage({ 
-            type: "warning", 
-            message: "警告消息1", 
+          HMessage({
+            type: "warning",
+            message: "警告消息1",
             duration: 4000,
-            groupConfig: { 
+            groupConfig: {
               enabled: true,
-              groupBy: (instance) => instance.config.type
-            }
+              groupBy: (instance) => instance.config.type,
+            },
           });
         }, 600);
         setTimeout(() => {
-          HMessage({ 
-            type: "warning", 
-            message: "警告消息2", 
+          HMessage({
+            type: "warning",
+            message: "警告消息2",
             duration: 4000,
-            groupConfig: { 
+            groupConfig: {
               enabled: true,
-              groupBy: (instance) => instance.config.type
-            }
+              groupBy: (instance) => instance.config.type,
+            },
           });
         }, 900);
       };
@@ -312,36 +315,36 @@ export const MessageGrouping: Story = {
       // 混合分组测试 - 启用和禁用分组
       const showMixedGrouping = () => {
         // 启用分组的消息
-        HMessage({ 
-          type: "info", 
-          message: "分组消息1", 
+        HMessage({
+          type: "info",
+          message: "分组消息1",
           duration: 5000,
-          groupConfig: { enabled: true }
+          groupConfig: { enabled: true },
         });
         setTimeout(() => {
-          HMessage({ 
-            type: "info", 
-            message: "分组消息1", 
+          HMessage({
+            type: "info",
+            message: "分组消息1",
             duration: 5000,
-            groupConfig: { enabled: true }
+            groupConfig: { enabled: true },
           });
         }, 400);
-        
+
         // 禁用分组的消息
         setTimeout(() => {
-          HMessage({ 
-            type: "error", 
-            message: "独立错误消息1", 
+          HMessage({
+            type: "error",
+            message: "独立错误消息1",
             duration: 5000,
-            groupConfig: { enabled: false }
+            groupConfig: { enabled: false },
           });
         }, 800);
         setTimeout(() => {
-          HMessage({ 
-            type: "error", 
-            message: "独立错误消息2", 
+          HMessage({
+            type: "error",
+            message: "独立错误消息2",
             duration: 5000,
-            groupConfig: { enabled: false }
+            groupConfig: { enabled: false },
           });
         }, 1200);
       };
@@ -353,25 +356,25 @@ export const MessageGrouping: Story = {
           { type: "success", message: "快速分组测试" },
           { type: "success", message: "快速分组测试" },
           { type: "success", message: "快速分组测试" },
-          { type: "success", message: "快速分组测试" }
+          { type: "success", message: "快速分组测试" },
         ];
-        
+
         messages.forEach((msg, index) => {
           setTimeout(() => {
             HMessage({
               ...msg,
               duration: 3000,
-              groupConfig: { enabled: true }
+              groupConfig: { enabled: true },
             });
           }, index * 100);
         });
       };
-      
-      return { 
-        showBasicGrouping, 
-        showTypeGrouping, 
-        showMixedGrouping, 
-        showQuickGrouping 
+
+      return {
+        showBasicGrouping,
+        showTypeGrouping,
+        showMixedGrouping,
+        showQuickGrouping,
       };
     },
     template: `
@@ -435,23 +438,63 @@ export const MessageGrouping: Story = {
   }),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    
+
     await step("测试基础分组功能", async () => {
       await userEvent.click(canvas.getByText("显示基础分组消息"));
     });
-    
+
     await step("测试类型分组功能", async () => {
       await userEvent.click(canvas.getByText("显示类型分组消息"));
     });
-    
+
     await step("测试混合分组功能", async () => {
       await userEvent.click(canvas.getByText("显示混合分组消息"));
     });
-    
+
     await step("测试快速分组功能", async () => {
       await userEvent.click(canvas.getByText("显示快速分组消息"));
     });
   },
+};
+
+// 消息事件
+export const MessageEvents: Story = {
+  args: {
+    duration: 1000,
+    message: "这是一条消息",
+  },
+  render: (args) => ({
+    components: {},
+    setup() {
+      const closeMessages = ref<string[]>([]);
+      const onClose = (instance: MessageInstance) => {
+        console.log("onClose", instance);
+        closeMessages.value.push("信息关闭:" + instance.config.message);
+        console.log("closeMessages", closeMessages.value)
+      };
+      const showMessage = () => {
+        HMessage({
+          message: args.message,
+          duration: args.duration,
+          onClose,
+        });
+      };
+      return {
+        onClose,
+        showMessage,
+        closeMessages
+      };
+    },
+    template: `
+      <div style="padding: 20px;">
+        <button @click="showMessage">显示消息</button>
+        <p>点击按钮显示消息，消息关闭前一刻会触发onClose事件</p>
+        <p v-for="(item, index) in closeMessages" :key="index">
+          {{ item }}
+        </p>
+      </div>
+    `,
+  }),
 };
 
 export default meta;

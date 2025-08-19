@@ -25,7 +25,7 @@ export interface MessageConfig {
   icon?: string;
   customClass?: string;
   groupConfig?: MessageGroupConfig;
-  onClose?: () => void;
+  onClose?: (instance: MessageInstance) => void;
 }
 
 export type MessageProps = MessageConfig & {
@@ -41,7 +41,7 @@ export interface MessageInstance {
 }
 
 export interface MessageEmits {
-  (e: "close"): void;
+  (e: "before-close"): void;
 }
 
 export interface MessageWrapperProps {

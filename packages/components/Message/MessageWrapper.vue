@@ -28,6 +28,7 @@ provide(MESSAGE_WRAPPER_CTX_KEY, {
         :index="index"
         v-bind="item.config"
         :grouping-count="item.count"
+        @before-close="() => item.config.onClose?.({...item})"
       />
     </MessageTransition>
   </div>

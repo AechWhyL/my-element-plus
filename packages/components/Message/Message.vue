@@ -73,7 +73,7 @@ onBeforeUnmount(() => {
   );
 });
 onUnmounted(() => {
-  emit("close");
+  emit("before-close");
 });
 </script>
 

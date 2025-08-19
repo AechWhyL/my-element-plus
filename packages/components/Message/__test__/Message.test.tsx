@@ -277,6 +277,21 @@ describe("HMessage", () => {
         }, { timeout: 300 })
     })
 
+    describe("events", () => {
+        it("should emit close event when message is closed", async () => {
+            const onClose = vi.fn()
+            HMessage({
+                message: "test message",
+                duration: 100,
+                onClose
+            })
+            await nextTick()
+            await vi.waitFor(() => {
+                expect(onClose).toHaveBeenCalled()
+            }, { timeout: 300 })
+        })
+    })
+
     describe("grouping", () => {
         it("should group message by message content by default", async () => {
             HMessage({
