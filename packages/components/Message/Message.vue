@@ -1,8 +1,15 @@
 <script setup lang="ts">
-import { computed, inject, onBeforeUnmount, onMounted, ref } from "vue";
+import {
+  computed,
+  inject,
+  onBeforeUnmount,
+  onMounted,
+  onUnmounted,
+  ref,
+} from "vue";
 import { ErIcon } from "../Icon";
 import { MESSAGE_WRAPPER_CTX_KEY } from "./constants";
-import type { MessageConfig } from "./type";
+import type { MessageEmits, MessageProps } from "./type";
 
 defineOptions({
   name: "HMessage",
@@ -10,8 +17,9 @@ defineOptions({
 
 const ctx = inject(MESSAGE_WRAPPER_CTX_KEY, undefined)!;
 const messageRef = ref<HTMLElement>();
+const emit = defineEmits<MessageEmits>();
 
-const props = withDefaults(defineProps<MessageConfig>(), {
+const props = withDefaults(defineProps<MessageProps>(), {
   type: "info",
   duration: 3000,
   effect: "light",
@@ -19,11 +27,12 @@ const props = withDefaults(defineProps<MessageConfig>(), {
   customClass: "",
 });
 
-const styleTop = computed(() => {
-  const lastMessageDom =
-    ctx.messageRefs.value[ctx.messageRefs.value.length - 1];
-  const lastMessageBottom = lastMessageDom?.getBoundingClientRect().bottom || 0;
-  return lastMessageBottom + ctx.gap.value;
+onMounted(() => {
+  setTimeout(() => {
+    ctx.messageInstances.value = ctx.messageInstances.value.filter(
+      (_, index) => index !== props.index
+    );
+  }, props.duration);
 });
 
 const defaultIconMap = {
@@ -41,6 +50,9 @@ onBeforeUnmount(() => {
     (item) => item !== messageRef.value
   );
 });
+onUnmounted(() => {
+  emit("close");
+});
 </script>
 
 <template>
@@ -52,7 +64,6 @@ onBeforeUnmount(() => {
       [`h-message--${props.effect}`]: props.effect,
       [props.customClass]: props.customClass,
     }"
-    :style="{ top: styleTop }"
   >
     <div class="h-message__icon">
       <slot name="icon">
@@ -67,4 +78,6 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+@import "./style.scss";
+</style>

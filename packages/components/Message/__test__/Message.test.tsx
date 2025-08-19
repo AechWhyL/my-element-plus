@@ -5,10 +5,10 @@ import Message from "../Message.vue";
 import HMessage from "../Message";
 import { nextTick, ref } from "vue";
 import { MESSAGE_WRAPPER_CTX_KEY } from "../constants";
-import type { MessageConfig, MessageEffect, MessageInstance, MessageType } from "../type";
+import type {  MessageEffect, MessageInstance, MessageProps, MessageType } from "../type";
 
 describe("MessageInstance", () => {
-    const createMessage = (props: MessageConfig) => {
+    const createMessage = (props: MessageProps) => {
         const wrapper = mount(Message, {
             props,
             global: {
@@ -253,6 +253,32 @@ describe("HMessage", () => {
         await nextTick()
         expect(document.querySelectorAll(".h-message").length).toBe(1)
         HMessage.clear()
+        await nextTick()
+        expect(document.querySelectorAll(".h-message").length).toBe(0)
+    })
+
+    test("自动间隔", async () => {
+        HMessage({
+            message: "test message"
+        })
+        HMessage({
+            message: "test message 2"
+        })
+        await nextTick()
+        const messages = document.querySelectorAll(".h-message")
+        
+        expect((messages[0] as HTMLElement).style.top).toBe("0px")
+        expect((messages[1] as HTMLElement).style.top).not.toBe("0px")
+    })
+
+    test("自动关闭", async () => {
+        vi.useFakeTimers()
+        HMessage({
+            message: "test message",
+            duration: 1000
+        })
+        await nextTick()
+        vi.runAllTimers()
         await nextTick()
         expect(document.querySelectorAll(".h-message").length).toBe(0)
     })

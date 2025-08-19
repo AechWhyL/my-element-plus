@@ -11,7 +11,7 @@ export default defineConfig({
       entry: resolve(__dirname, "index.ts"),
       name: "HylFakeElementPlus",
       formats: ["umd"],
-      fileName: "index.[format]",
+      fileName: "index",
     },
     rollupOptions: {
       external: ["Vue"],

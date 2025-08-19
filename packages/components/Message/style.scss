@@ -1,5 +1,5 @@
 .h-message {
-  position: fixed;
+  position: relative;
   width: fit-content;
   max-width: calc(100% - 32px);
   padding: 12px 16px;
@@ -11,7 +11,10 @@
   color: var(--er-text-color-regular);
   font-size: var(--er-font-size-base);
   line-height: 1.4;
-  z-index: 2000;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
   
   // 使用Scss each生成各type下的样式
   $types: (success, info, warning, error);
@@ -73,7 +76,6 @@
   &__icon {
     flex-shrink: 0;
     margin-top: 1px;
-    margin-right: 8px;
     font-size: var(--er-font-size-medium);
   }
 }

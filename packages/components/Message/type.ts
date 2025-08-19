@@ -26,6 +26,10 @@ export interface MessageConfig {
   onClose?: () => void;
 }
 
+export type MessageProps = MessageConfig & {
+  index?: number;
+};
+
 // 消息实例接口
 export interface MessageInstance {
   id: string; // 内部自动生成
