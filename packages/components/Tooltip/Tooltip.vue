@@ -106,16 +106,15 @@ provide(TOOLTIP_CTX_KEY, {
           v-show="visible"
           class="h-tooltip-content"
           :class="{
-            [`${props.effect}`]: effect,
-            [`${contentClass}`]: contentClass,
-            ['disabled']: props.disabled,
+            [`${props.effect}`]: props.effect,
+            'disabled': props.disabled,
           }"
-          :placement="placement"
+          :placement="props.placement"
           :popper-options="{
             modifiers: [offsetModifier],
           }"
-          @mouseenter="onMouseLeave"
-          @mouseleave="onMouseEnter"
+          @mouseenter="onMouseEnter"
+          @mouseleave="onMouseLeave"
         >
           <HPopperArrow v-show="showArrow" class="h-tooltip-arrow" />
           <slot name="content">
