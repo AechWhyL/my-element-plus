@@ -35,6 +35,13 @@ const MessageDemo = defineComponent({
     customClass: {
       type: String,
       default: ""
+    },
+    groupConfig: {
+      type: Object,
+      default: () => ({
+        enabled: false,
+        groupBy: undefined
+      })
     }
   },
   setup(props) {
@@ -230,32 +237,219 @@ export const MessageGrouping: Story = {
   render: () => ({
     components: {},
     setup() {
-      const showGroupedMessages = () => {
-        // 快速连续显示多条消息，测试分组功能
-        HMessage({ type: "info", message: "第一条消息", duration: 2000 });
+      // 基础分组消息 - 相同内容的消息会被分组
+      const showBasicGrouping = () => {
+        HMessage({ 
+          type: "info", 
+          message: "相同内容的消息会被分组", 
+          duration: 4000,
+          groupConfig: { enabled: true }
+        });
         setTimeout(() => {
-          HMessage({ type: "success", message: "第二条消息", duration: 2000 });
-        }, 100);
+          HMessage({ 
+            type: "info", 
+            message: "相同内容的消息会被分组", 
+            duration: 4000,
+            groupConfig: { enabled: true }
+          });
+        }, 500);
         setTimeout(() => {
-          HMessage({ type: "warning", message: "第三条消息", duration: 2000 });
-        }, 200);
+          HMessage({ 
+            type: "info", 
+            message: "相同内容的消息会被分组", 
+            duration: 4000,
+            groupConfig: { enabled: true }
+          });
+        }, 1000);
+      };
+
+      // 自定义分组依据 - 根据消息类型分组
+      const showTypeGrouping = () => {
+        HMessage({ 
+          type: "success", 
+          message: "成功消息1", 
+          duration: 4000,
+          groupConfig: { 
+            enabled: true,
+            groupBy: (instance) => instance.config.type
+          }
+        });
+        setTimeout(() => {
+          HMessage({ 
+            type: "success", 
+            message: "成功消息2", 
+            duration: 4000,
+            groupConfig: { 
+              enabled: true,
+              groupBy: (instance) => instance.config.type
+            }
+          });
+        }, 300);
+        setTimeout(() => {
+          HMessage({ 
+            type: "warning", 
+            message: "警告消息1", 
+            duration: 4000,
+            groupConfig: { 
+              enabled: true,
+              groupBy: (instance) => instance.config.type
+            }
+          });
+        }, 600);
+        setTimeout(() => {
+          HMessage({ 
+            type: "warning", 
+            message: "警告消息2", 
+            duration: 4000,
+            groupConfig: { 
+              enabled: true,
+              groupBy: (instance) => instance.config.type
+            }
+          });
+        }, 900);
+      };
+
+      // 混合分组测试 - 启用和禁用分组
+      const showMixedGrouping = () => {
+        // 启用分组的消息
+        HMessage({ 
+          type: "info", 
+          message: "分组消息1", 
+          duration: 5000,
+          groupConfig: { enabled: true }
+        });
+        setTimeout(() => {
+          HMessage({ 
+            type: "info", 
+            message: "分组消息1", 
+            duration: 5000,
+            groupConfig: { enabled: true }
+          });
+        }, 400);
+        
+        // 禁用分组的消息
+        setTimeout(() => {
+          HMessage({ 
+            type: "error", 
+            message: "独立错误消息1", 
+            duration: 5000,
+            groupConfig: { enabled: false }
+          });
+        }, 800);
+        setTimeout(() => {
+          HMessage({ 
+            type: "error", 
+            message: "独立错误消息2", 
+            duration: 5000,
+            groupConfig: { enabled: false }
+          });
+        }, 1200);
+      };
+
+      // 快速连续分组测试
+      const showQuickGrouping = () => {
+        const messages = [
+          { type: "success", message: "快速分组测试" },
+          { type: "success", message: "快速分组测试" },
+          { type: "success", message: "快速分组测试" },
+          { type: "success", message: "快速分组测试" },
+          { type: "success", message: "快速分组测试" }
+        ];
+        
+        messages.forEach((msg, index) => {
+          setTimeout(() => {
+            HMessage({
+              ...msg,
+              duration: 3000,
+              groupConfig: { enabled: true }
+            });
+          }, index * 100);
+        });
       };
       
-      return { showGroupedMessages };
+      return { 
+        showBasicGrouping, 
+        showTypeGrouping, 
+        showMixedGrouping, 
+        showQuickGrouping 
+      };
     },
     template: `
       <div style="padding: 20px;">
-        <button @click="showGroupedMessages" style="padding: 8px 16px; background: #409eff; color: white; border: none; border-radius: 4px; cursor: pointer;">
-          显示分组消息
-        </button>
-        <p style="margin-top: 20px; color: #666;">快速连续显示多条消息，测试消息分组和定位功能</p>
+        <h3 style="margin-bottom: 20px; color: #333;">Message组件分组功能演示</h3>
+        
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+          <div>
+            <h4 style="margin-bottom: 10px; color: #666;">1. 基础分组功能</h4>
+            <button @click="showBasicGrouping" style="padding: 8px 16px; background: #409eff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+              显示基础分组消息
+            </button>
+            <p style="margin-top: 8px; color: #999; font-size: 14px;">
+              相同内容的消息会被自动分组，显示计数
+            </p>
+          </div>
+
+          <div>
+            <h4 style="margin-bottom: 10px; color: #666;">2. 自定义分组依据</h4>
+            <button @click="showTypeGrouping" style="padding: 8px 16px; background: #67c23a; color: white; border: none; border-radius: 4px; cursor: pointer;">
+              显示类型分组消息
+            </button>
+            <p style="margin-top: 8px; color: #999; font-size: 14px;">
+              根据消息类型分组，相同类型的消息会合并显示
+            </p>
+          </div>
+
+          <div>
+            <h4 style="margin-bottom: 10px; color: #666;">3. 混合分组模式</h4>
+            <button @click="showMixedGrouping" style="padding: 8px 16px; background: #e6a23c; color: white; border: none; border-radius: 4px; cursor: pointer;">
+              显示混合分组消息
+            </button>
+            <p style="margin-top: 8px; color: #999; font-size: 14px;">
+              同时展示启用分组和禁用分组的消息
+            </p>
+          </div>
+
+          <div>
+            <h4 style="margin-bottom: 10px; color: #666;">4. 快速连续分组</h4>
+            <button @click="showQuickGrouping" style="padding: 8px 16px; background: #f56c6c; color: white; border: none; border-radius: 4px; cursor: pointer;">
+              显示快速分组消息
+            </button>
+            <p style="margin-top: 8px; color: #999; font-size: 14px;">
+              快速连续发送相同消息，测试分组响应性能
+            </p>
+          </div>
+        </div>
+
+        <div style="margin-top: 30px; padding: 15px; background: #f5f7fa; border-radius: 6px;">
+          <h4 style="margin-bottom: 10px; color: #333;">分组功能说明：</h4>
+          <ul style="color: #666; line-height: 1.6; margin: 0; padding-left: 20px;">
+            <li><strong>基础分组</strong>：相同内容的消息自动合并，右上角显示计数</li>
+            <li><strong>自定义分组</strong>：可通过groupBy函数自定义分组依据</li>
+            <li><strong>分组配置</strong>：通过groupConfig.enabled控制是否启用分组</li>
+            <li><strong>计数显示</strong>：分组消息右上角会显示重复次数</li>
+            <li><strong>性能优化</strong>：避免重复消息占用过多屏幕空间</li>
+          </ul>
+        </div>
       </div>
     `,
   }),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    await step("点击按钮显示分组消息", async () => {
-      await userEvent.click(canvas.getByText("显示分组消息"));
+    
+    await step("测试基础分组功能", async () => {
+      await userEvent.click(canvas.getByText("显示基础分组消息"));
+    });
+    
+    await step("测试类型分组功能", async () => {
+      await userEvent.click(canvas.getByText("显示类型分组消息"));
+    });
+    
+    await step("测试混合分组功能", async () => {
+      await userEvent.click(canvas.getByText("显示混合分组消息"));
+    });
+    
+    await step("测试快速分组功能", async () => {
+      await userEvent.click(canvas.getByText("显示快速分组消息"));
     });
   },
 };

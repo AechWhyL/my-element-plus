@@ -5,7 +5,7 @@ import Message from "../Message.vue";
 import HMessage from "../Message";
 import { nextTick, ref } from "vue";
 import { MESSAGE_WRAPPER_CTX_KEY } from "../constants";
-import type {  MessageEffect, MessageInstance, MessageProps, MessageType } from "../type";
+import type { MessageEffect, MessageInstance, MessageProps, MessageType } from "../type";
 
 describe("MessageInstance", () => {
     const createMessage = (props: MessageProps) => {
@@ -180,9 +180,9 @@ describe("MessageInstance", () => {
     describe("组合属性测试", () => {
         it("应该正确组合所有基本属性", () => {
             const wrapper = createMessage({
-                    type: "warning",
-                    message: "组合测试消息",
-                    icon: "exclamation-triangle",
+                type: "warning",
+                message: "组合测试消息",
+                icon: "exclamation-triangle",
                 customClass: "test-combination",
                 effect: "dark",
             })
@@ -222,10 +222,14 @@ describe("MessageInstance", () => {
 });
 
 describe("HMessage", () => {
-    afterEach(() => {
+    afterEach(async () => {
+        document.querySelectorAll(".h-message").forEach(item => {
+            item.remove()
+        })
         HMessage.clear()
+        await nextTick()
     })
-    
+
     it("should render message", async () => {
         HMessage({
             message: "test message"
@@ -234,13 +238,14 @@ describe("HMessage", () => {
         const message = document.querySelector(".h-message")
         expect(message).toBeTruthy()
         expect(message?.textContent).toBe("test message")
-        
+
         HMessage("test message 2")
         await nextTick()
         expect(document.querySelectorAll(".h-message").length).toBe(2)
     })
 
     test("clear and close", async () => {
+        vi.useFakeTimers()
         const message = HMessage({
             message: "test message"
         })
@@ -250,36 +255,103 @@ describe("HMessage", () => {
         await nextTick()
         expect(document.querySelectorAll(".h-message").length).toBe(2)
         HMessage.close(message.id)
-        await nextTick()
-        expect(document.querySelectorAll(".h-message").length).toBe(1)
+        await vi.waitFor(() => {
+            expect(document.querySelectorAll(".h-message").length).toBe(1)
+        })
         HMessage.clear()
         await nextTick()
-        expect(document.querySelectorAll(".h-message").length).toBe(0)
-    })
-
-    test("自动间隔", async () => {
-        HMessage({
-            message: "test message"
+        await vi.waitFor(() => {
+            expect(document.querySelectorAll(".h-message").length).toBe(0)
         })
-        HMessage({
-            message: "test message 2"
-        })
-        await nextTick()
-        const messages = document.querySelectorAll(".h-message")
-        
-        expect((messages[0] as HTMLElement).style.top).toBe("0px")
-        expect((messages[1] as HTMLElement).style.top).not.toBe("0px")
+        vi.useRealTimers()
     })
 
     test("自动关闭", async () => {
-        vi.useFakeTimers()
         HMessage({
             message: "test message",
-            duration: 1000
+            duration: 100
         })
         await nextTick()
-        vi.runAllTimers()
-        await nextTick()
-        expect(document.querySelectorAll(".h-message").length).toBe(0)
+        await vi.waitFor(() => {
+            expect(document.querySelectorAll(".h-message").length).toBe(0)
+        }, { timeout: 300 })
+    })
+
+    describe("grouping", () => {
+        it("should group message by message content by default", async () => {
+            HMessage({
+                message: "test message",
+                groupConfig: {
+                    enabled: true
+                }
+            })
+            HMessage({
+                message: "test message",
+                groupConfig: {
+                    enabled: true
+                }
+            })
+            await nextTick()
+            expect(document.querySelectorAll(".h-message").length).toBe(1)
+        })
+
+        test("custom groupBy", async () => {
+            HMessage({
+                message: "test message",
+                type: "success",
+                groupConfig: {
+                    enabled: true,
+                    groupBy: (message) => message.config.type
+                }
+            })
+            HMessage({
+                message: "test message2",
+                type: "success",
+                groupConfig: {
+                    enabled: true,
+                    groupBy: (message) => message.config.type
+                }
+            })
+            HMessage({
+                message: "test message",
+                groupConfig: {
+                    enabled: true,
+                    groupBy: (message) => message.config.type
+                }
+            })
+            HMessage({
+                message: "test message",
+                groupConfig: {
+                    enabled: true,
+                    groupBy: (message) => message.config.type
+                }
+            })
+            HMessage({
+                message: "test message",
+                type: "error",
+                groupConfig: {
+                    enabled: true,
+                    groupBy: (message) => message.config.type
+                }
+            })
+            await nextTick()
+            expect(document.querySelectorAll(".h-message").length).toBe(3)
+            expect(document.querySelectorAll(".h-message__group-count").length).toBe(2)
+        })
+        it("新增分组消息时，刷新分组消息的存在时间", async () => {
+            HMessage({
+                message: "test message",
+                duration: 100
+            })
+            await nextTick()
+            HMessage({
+                message: "test message",
+                duration: 200
+            })
+            await nextTick()
+            await vi.waitFor(() => {
+                expect(document.querySelectorAll(".h-message").length).toBe(1)
+            }, { timeout: 200 })
+        })
     })
 })

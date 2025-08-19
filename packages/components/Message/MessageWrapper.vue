@@ -27,6 +27,7 @@ provide(MESSAGE_WRAPPER_CTX_KEY, {
         :key="item.id"
         :index="index"
         v-bind="item.config"
+        :grouping-count="item.count"
       />
     </MessageTransition>
   </div>

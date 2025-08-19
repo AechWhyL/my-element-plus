@@ -6,10 +6,11 @@ import {
   onMounted,
   onUnmounted,
   ref,
+  watch,
 } from "vue";
 import { ErIcon } from "../Icon";
 import { MESSAGE_WRAPPER_CTX_KEY } from "./constants";
-import type { MessageEmits, MessageProps } from "./type";
+import type { MessageEmits, MessageProps, MessageType } from "./type";
 
 defineOptions({
   name: "HMessage",
@@ -27,20 +28,41 @@ const props = withDefaults(defineProps<MessageProps>(), {
   customClass: "",
 });
 
+let timer:number|null = null
+
 onMounted(() => {
-  setTimeout(() => {
+  timer = window.setTimeout(() => {
     ctx.messageInstances.value = ctx.messageInstances.value.filter(
       (_, index) => index !== props.index
-    );
-  }, props.duration);
+    )
+  }, props.duration)
 });
 
-const defaultIconMap = {
-  success: "check-circle",
-  info: "info-circle",
-  warning: "warning-circle",
-  error: "error-circle",
+const showGroupCount = computed(() => {
+  return (
+    props.groupConfig?.enabled &&
+    props.groupingCount &&
+    props.groupingCount > 1
+  );
+});
+
+const defaultIcons: Record<MessageType, string> = {
+  success: "circle-check",
+  info: "circle-info",
+  warning: "circle-exclamation",
+  error: "circle-xmark",
 };
+
+watch(() => props.groupingCount, (newVal) => {
+  if (newVal && timer) {
+    clearTimeout(timer)
+    timer = window.setTimeout(() => {
+      ctx.messageInstances.value = ctx.messageInstances.value.filter(
+        (_, index) => index !== props.index
+      )
+    }, props.duration)
+  }
+});
 
 onMounted(() => {
   messageRef.value && ctx.messageRefs.value.push(messageRef.value);
@@ -65,9 +87,12 @@ onUnmounted(() => {
       [props.customClass]: props.customClass,
     }"
   >
+    <div class="h-message__group-count" v-if="showGroupCount">
+      {{ props.groupingCount }}
+    </div>
     <div class="h-message__icon">
       <slot name="icon">
-        <ErIcon :icon="props.icon || defaultIconMap[props.type]" />
+        <ErIcon :icon="props.icon || defaultIcons[props.type]" />
       </slot>
     </div>
     <div class="h-message__content">
