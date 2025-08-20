@@ -1,14 +1,26 @@
 // Input组件样式
 .h-input-wrapper {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: stretch;
   width: 100%;
+  border: 1px solid var(--h-input-border-color, #dcdfe6);
+  border-radius: 4px;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
   
   // 尺寸变体
   &--large {
     .h-input {
       height: var(--h-input-height-large, 40px);
       font-size: var(--h-input-font-size-large, 16px);
+    }
+    
+    .h-input__prefix,
+    .h-input__suffix,
+    .h-input__clear,
+    .h-input__password-toggle {
+      font-size: 16px;
     }
   }
   
@@ -17,6 +29,13 @@
       height: var(--h-input-height-default, 32px);
       font-size: var(--h-input-font-size, 14px);
     }
+    
+    .h-input__prefix,
+    .h-input__suffix,
+    .h-input__clear,
+    .h-input__password-toggle {
+      font-size: 14px;
+    }
   }
   
   &--small {
@@ -24,57 +43,18 @@
       height: var(--h-input-height-small, 24px);
       font-size: var(--h-input-font-size-small, 12px);
     }
+    
+    .h-input__prefix,
+    .h-input__suffix,
+    .h-input__clear,
+    .h-input__password-toggle {
+      font-size: 12px;
+    }
   }
   
   // 状态样式
   &.is-focused {
-    .h-input {
-      border-color: var(--h-input-border-color-focus, #409eff);
-    }
-  }
-  
-  &.is-disabled {
-    .h-input {
-      background-color: #f5f7fa;
-      border-color: #e4e7ed;
-      color: #c0c4cc;
-      cursor: not-allowed;
-    }
-  }
-  
-  &.is-readonly {
-    .h-input {
-      background-color: #f5f7fa;
-      cursor: default;
-    }
-  }
-  
-  &.is-round {
-    .h-input {
-      border-radius: 20px;
-    }
-  }
-}
-
-.h-input {
-  width: 100%;
-  padding: 0 12px;
-  border: 1px solid var(--h-input-border-color, #dcdfe6);
-  border-radius: 4px;
-  outline: none;
-  transition: border-color 0.2s;
-  box-sizing: border-box;
-  
-  &:hover {
-    border-color: var(--h-input-border-color-hover, #c0c4cc);
-  }
-  
-  &:focus {
     border-color: var(--h-input-border-color-focus, #409eff);
-  }
-  
-  &::placeholder {
-    color: #c0c4cc;
   }
   
   &.is-disabled {
@@ -88,24 +68,112 @@
     background-color: #f5f7fa;
     cursor: default;
   }
+  
+  &.is-round {
+    border-radius: 20px;
+  }
+  
+  &:hover {
+    border-color: var(--h-input-border-color-hover, #c0c4cc);
+  }
+}
+
+.h-input__inner-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.h-input {
+  flex: 1;
+  padding: 0 12px;
+  border: none;
+  outline: none;
+  background: transparent;
+  box-sizing: border-box;
+  
+  &::placeholder {
+    color: #c0c4cc;
+  }
+  
+  &.is-disabled {
+    background-color: transparent;
+    color: #c0c4cc;
+    cursor: not-allowed;
+  }
+  
+  &.is-readonly {
+    background-color: transparent;
+    cursor: default;
+  }
+  
+  // 隐藏浏览器原生的密码显示按钮 (参考 Element Plus 实现)
+  &[type='password']::-ms-reveal {
+    display: none;
+  }
+}
+
+// 前缀和后缀插槽样式
+.h-input__prefix,
+.h-input__suffix {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  color: #909399;
+  line-height: 1;
+  white-space: nowrap;
+  transition: color 0.2s;
+  
+  // 图标样式
+  .h-icon {
+    font-size: inherit;
+  }
+  
+  &:hover {
+    color: #606266;
+  }
 }
 
 // 清除按钮和密码切换按钮
 .h-input__clear,
 .h-input__password-toggle {
-  position: absolute;
-  top: 50%;
-  right: 8px;
-  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
   cursor: pointer;
   color: #c0c4cc;
-  font-size: 14px;
+  line-height: 1;
+  transition: color 0.2s;
+  
+  .h-icon {
+    font-size: inherit;
+  }
   
   &:hover {
     color: #909399;
   }
 }
 
-.h-input__password-toggle {
-  right: 32px;
+// 当有前缀插槽时，调整input的左边距
+.h-input-wrapper:has(.h-input__prefix) {
+  .h-input {
+    padding-left: 8px;
+  }
+}
+
+// 当有后缀插槽时，调整input的右边距
+.h-input-wrapper:has(.h-input__suffix) {
+  .h-input {
+    padding-right: 8px;
+  }
+}
+
+// 当有清除按钮或密码切换按钮时，调整input的右边距
+.h-input-wrapper:has(.h-input__clear),
+.h-input-wrapper:has(.h-input__password-toggle) {
+  .h-input {
+    padding-right: 8px;
+  }
 }

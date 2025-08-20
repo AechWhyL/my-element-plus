@@ -249,3 +249,94 @@ export const FormExample: Story = {
     round: false
   }
 };
+
+// 插槽和按钮样式展示
+export const SlotsAndButtons: Story = {
+  render: (args) => ({
+    components: { HInput },
+    setup() {
+      const value = ref('示例内容');
+      return { value, args };
+    },
+    template: `
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: bold;">带前缀插槽</label>
+          <HInput v-model="value" v-bind="args">
+            <template #prefix>
+              <span style="color: #409eff;">🔍</span>
+            </template>
+          </HInput>
+        </div>
+        
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: bold;">带后缀插槽</label>
+          <HInput v-model="value" v-bind="args">
+            <template #suffix>
+              <span style="color: #67c23a;">✓</span>
+            </template>
+          </HInput>
+        </div>
+        
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: bold;">带清除按钮</label>
+          <HInput v-model="value" v-bind="args" clearable />
+        </div>
+        
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: bold;">带密码切换按钮</label>
+          <HInput v-model="value" type="password" v-bind="args" show-password />
+        </div>
+        
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: bold;">组合使用：前缀 + 后缀 + 清除按钮</label>
+          <HInput v-model="value" v-bind="args" clearable>
+            <template #prefix>
+              <span style="color: #409eff;">🔍</span>
+            </template>
+            <template #suffix>
+              <span style="color: #67c23a;">✓</span>
+            </template>
+          </HInput>
+        </div>
+        
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: bold;">组合使用：前缀 + 密码切换按钮</label>
+          <HInput v-model="value" type="password" v-bind="args" show-password>
+            <template #prefix>
+              <span style="color: #409eff;">🔒</span>
+            </template>
+          </HInput>
+        </div>
+        
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: bold;">不同尺寸对比</label>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <HInput v-model="value" size="large" clearable>
+              <template #prefix>
+                <span style="color: #409eff;">🔍</span>
+              </template>
+            </HInput>
+            <HInput v-model="value" size="default" clearable>
+              <template #prefix>
+                <span style="color: #409eff;">🔍</span>
+              </template>
+            </HInput>
+            <HInput v-model="value" size="small" clearable>
+              <template #prefix>
+                <span style="color: #409eff;">🔍</span>
+              </template>
+            </HInput>
+          </div>
+        </div>
+      </div>
+    `
+  }),
+  args: {
+    type: 'text',
+    size: 'default',
+    placeholder: '请输入内容',
+    clearable: false,
+    showPassword: false
+  }
+};

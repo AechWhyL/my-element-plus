@@ -70,7 +70,7 @@ const meta: Meta<typeof HTooltip> = {
       control: {
         type: "select",
       },
-      options: ["top", "bottom", "left", "right"],
+      options: ["top", "bottom", "left", "right","top-start","top-end","bottom-start","bottom-end","left-start","left-end","right-start","right-end"],
     },
   },
 };
