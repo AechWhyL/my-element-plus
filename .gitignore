@@ -56,3 +56,4 @@ docs/.vitepress/dist
 *.bak
 *.patch
 *.diff
+element-plus-dev/
