@@ -62,7 +62,7 @@ watch(
 const hideWhenHover = triggerWhen("hover", trigger, hide);
 const keepOpen = triggerWhen("hover", trigger, show);
 
-const onMouseLeave = (e:Event) => {
+const onMouseLeave = (e: Event) => {
   if (controlled()) {
     return;
   }
@@ -72,7 +72,7 @@ const onMouseLeave = (e:Event) => {
   hideWhenHover(e);
 };
 
-const onMouseEnter = (e:Event) => {
+const onMouseEnter = (e: Event) => {
   if (controlled()) {
     return;
   }
@@ -107,7 +107,7 @@ provide(TOOLTIP_CTX_KEY, {
           class="h-tooltip-content"
           :class="{
             [`${props.effect}`]: props.effect,
-            'disabled': props.disabled,
+            disabled: props.disabled,
           }"
           :placement="props.placement"
           :popper-options="{

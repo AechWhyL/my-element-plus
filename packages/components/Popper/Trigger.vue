@@ -27,7 +27,6 @@ onMounted(() => {
   watch(
     () => props.virtualRef,
     (virtualRef) => {
-      console.log(virtualRef)
       if (virtualRef) {
         triggerRef.value = unref(virtualRef);
       }
