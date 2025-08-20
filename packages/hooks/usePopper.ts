@@ -56,8 +56,9 @@ export const usePopper = (
   });
 
   const computedOpts = computed<Options>(() => {
-    const { placement, strategy, modifiers } = unref(options);
+    const { placement, strategy, modifiers, onFirstUpdate } = unref(options);
     return {
+      onFirstUpdate,
       placement: placement || "bottom",
       strategy: strategy || "absolute",
       modifiers: [
