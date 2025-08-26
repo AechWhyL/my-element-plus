@@ -1,0 +1,207 @@
+import { describe, it, expect, vi } from "vitest";
+import HForm from "../Form.vue";
+import { mount } from "@vue/test-utils";
+import { defineComponent, nextTick } from "vue";
+import HFormItem from "../FormItem.vue";
+import type {
+  FormItemProps,
+  FormItemRule,
+  FormProps,
+  FormRules,
+} from "../type";
+
+describe("Form", () => {
+  const createFormItem = (formItemProps: FormItemProps) => {
+    return defineComponent({
+      setup() {
+        return () => <HFormItem {...formItemProps} />;
+      },
+    });
+  };
+  const createTestComp = (
+    props: FormProps = {},
+    formItemProps: FormItemProps[] = []
+  ) => {
+    return mount(HForm, {
+      props,
+      slots: {
+        default: formItemProps.map((item) => createFormItem(item)),
+      },
+    });
+  };
+  describe("expose", () => {
+    it("validateField", async () => {
+      const cb = vi.fn();
+      const model: Record<string, any> = {
+        name: 20,
+        age: "18",
+      };
+      const wrapper = createTestComp(
+        {
+          model,
+          rules: {
+            name: [
+              {
+                type: "string",
+                message: "name is required and must be a string",
+              },
+            ] as FormItemRule,
+            age: [
+              {
+                type: "number",
+                message: "age is required and must be a number",
+              },
+            ] as FormItemRule,
+          },
+        },
+        [
+          {
+            prop: "age",
+          },
+        ]
+      );
+      await wrapper.vm.validateField("age", cb);
+      await nextTick();
+      expect(wrapper.text()).toContain("age is required and must be a number");
+      expect(cb).toHaveBeenCalledTimes(1);
+
+      model.age = 18;
+      await wrapper.vm.validateField("age", cb);
+      await nextTick();
+      expect(cb).toHaveBeenCalledTimes(2);
+    });
+    it("validate", async () => {
+      const cb = vi.fn();
+      const model: Record<string, any> = {
+        name: 20,
+        age: "18",
+        phone: "12345678901",
+      };
+      const wrapper = createTestComp(
+        {
+          model,
+          rules: {
+            name: [
+              {
+                type: "string",
+                message: "name is required and must be a string",
+              },
+            ],
+            age: [
+              {
+                type: "number",
+                message: "age is required and must be a number",
+              },
+            ],
+            phone: [
+              {
+                type: "string",
+                message: "phone is required and must be a string",
+              },
+            ],
+          } as FormRules,
+        },
+        [
+          {
+            prop: "name",
+          },
+          {
+            prop: "age",
+          },
+        ]
+      );
+      await nextTick();
+      await wrapper.vm.validate(cb);
+      expect(cb).toHaveBeenCalledTimes(1);
+      expect(wrapper.text()).toContain("name is required and must be a string");
+      expect(wrapper.text()).toContain("age is required and must be a number");
+
+      model.age = 18;
+      model.name = "test";
+      await wrapper.vm.validate(cb);
+      expect(cb).toHaveBeenCalledTimes(2);
+    });
+    it("clearValidate", async () => {
+      const wrapper = createTestComp(
+        {
+          model: {
+            name: 20,
+            age: "18",
+            phone: 100,
+          },
+          rules: {
+            name: [{ type: "string", message: "name must be a string" }],
+            age: [{ type: "number", message: "age must be a number" }],
+            phone: [{ type: "string", message: "phone must be a string" }],
+          },
+        },
+        [{ prop: "name" }, { prop: "age" }, { prop: "phone" }]
+      );
+      await wrapper.vm.validate();
+      console.log(wrapper.text());
+      expect(wrapper.text()).toContain("name must be a string");
+      expect(wrapper.text()).toContain("age must be a number");
+      expect(wrapper.text()).toContain("phone must be a string");
+      wrapper.vm.clearValidate(["name", "age"]);
+      await nextTick();
+      expect(wrapper.text()).not.toContain("name must be a string");
+      expect(wrapper.text()).not.toContain("age must be a number");
+      expect(wrapper.text()).toContain("phone must be a string");
+      wrapper.vm.clearValidate("phone");
+      await nextTick();
+      expect(wrapper.text()).not.toContain("phone must be a string");
+      wrapper.vm.clearValidate();
+      await nextTick();
+      expect(wrapper.text()).not.toContain("name must be a string");
+      expect(wrapper.text()).not.toContain("age must be a number");
+      expect(wrapper.text()).not.toContain("phone must be a string");
+    });
+  });
+  describe("与 FormItem 的交互", () => {
+    it("rules 应当会被 FormItem 的 rules 合并", async () => {
+      const wrapper = createTestComp(
+        {
+          model: {
+            name: 20,
+            age: 18,
+          },
+          rules: {
+            name: [
+              { required: true, message: "name is required" },
+            ] as FormItemRule,
+            age: [
+              {
+                type: "number",
+                message: "age is required",
+              },
+            ] as FormItemRule,
+          },
+        },
+        [
+          {
+            prop: "name",
+            rules: [
+              {
+                type: "string",
+                message: "name is required and must be a string",
+              },
+            ],
+          },
+          {
+            prop: "age",
+            rules: [
+              {
+                type: "number",
+                message: "age is required and must be a number",
+              },
+            ],
+          },
+        ]
+      );
+      await nextTick();
+      await wrapper.vm.validateField("name");
+      await nextTick();
+      expect(wrapper.text()).toContain("name is required and must be a string");
+    });
+  });
+});
