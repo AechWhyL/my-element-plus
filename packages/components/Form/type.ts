@@ -40,6 +40,7 @@ export interface FormContext {
   validateErrors: Ref<ValidateFieldsError | undefined>;
   validateFieldErrors: Ref<ValidateFieldsError | undefined>;
   validateField: (prop: string, cb?: FormValidateCallback) => void;
+  disabled?: Ref<boolean>;
 }
 
 export interface FormProps {
