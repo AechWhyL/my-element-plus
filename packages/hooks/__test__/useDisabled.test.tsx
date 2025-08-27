@@ -1,9 +1,9 @@
 import { FORM_CONTEXT_KEY } from "@hyl-fake-element-plus/components/Form/constants";
-import type { FormContext } from "@hyl-fake-element-plus/components/Form/type";
+import type { FormContext, InternalFormItemContext } from "@hyl-fake-element-plus/components/Form/type";
 import { useDisabled } from "../index";
 import { mount } from "@vue/test-utils";
-import { describe, it, expect, vi, test, beforeEach } from "vitest";
-import { defineComponent, nextTick, reactive, ref, type Ref } from "vue";
+import { describe, it, expect, vi, test } from "vitest";
+import { defineComponent, nextTick, ref, type Ref } from "vue";
 
 describe("useDisabled", () => {
   let disabledSpy: Ref<boolean>;
@@ -15,6 +15,8 @@ describe("useDisabled", () => {
       validateErrors: ref({}),
       validateFieldErrors: ref({}),
       validateField: vi.fn(),
+      addFormItemContext: vi.fn(),
+      removeFormItemContext: vi.fn(),
     };
 
     return mount(

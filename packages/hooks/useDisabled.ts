@@ -1,5 +1,5 @@
 import { computed, inject, ref } from "vue";
-import { FORM_CONTEXT_KEY } from "@/components/Form/constants";
+import { FORM_CONTEXT_KEY } from "@hyl-fake-element-plus/components/Form/constants";
 
 export const useDisabled = (defaultValue: boolean = false) => {
   const disabled = ref<boolean>(defaultValue);
