@@ -274,6 +274,7 @@ export const RealTimeValidation: Story = {
           } else {
             HMessage({
               message: "验证失败",
+              type: "error",
             });
           }
         });
@@ -372,6 +373,7 @@ export const ModalForm: Story = {
           } else {
             HMessage({
               message: "验证失败",
+              type: "error",
             });
           }
         });
