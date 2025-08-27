@@ -6,6 +6,7 @@
 
 <script setup lang="ts">
 import type {
+  FormEmits,
   FormExpose,
   FormProps,
   FormRules,
@@ -14,7 +15,7 @@ import type {
 } from "./type";
 import Schema, { type ValidateFieldsError } from "async-validator";
 import { FORM_CONTEXT_KEY } from "./constants";
-import { nextTick, provide, ref, unref, watch } from "vue";
+import { provide, ref, unref, watch } from "vue";
 import { isArray, pick } from "lodash-es";
 import type { Arrayable } from "@hyl-fake-element-plus/utils";
 
@@ -25,6 +26,9 @@ defineOptions({
 const props = withDefaults(defineProps<FormProps>(), {
   validateOnRuleChange: true,
 });
+
+const emit = defineEmits<FormEmits>();
+
 const rules = ref<FormRules>({});
 const schema = ref<Schema>();
 const validateErrors = ref<ValidateFieldsError>();
@@ -72,11 +76,13 @@ const validate = async (cb?: FormValidateCallback) => {
       cb?.(true);
       validateErrors.value = undefined;
       validateFieldErrors.value = {};
+      emit("validate", { valid: true, fields: {} });
     })
     .catch(({ errors, fields }) => {
       cb?.(false, fields);
       validateErrors.value = errors;
       validateFieldErrors.value = fields;
+      emit("validate", { valid: false, fields });
     });
 };
 
@@ -90,11 +96,13 @@ const validateField = async (prop: string, cb?: FormValidateCallback) => {
       cb?.(true);
       validateFieldErrors.value &&
         Reflect.deleteProperty(validateFieldErrors.value, prop);
+      emit("validate", { valid: true, fields: {} });
     })
     .catch(({ errors, fields }) => {
       cb?.(false, fields);
       validateErrors.value = errors;
       validateFieldErrors.value[prop] = fields[prop];
+      emit("validate", { valid: false, fields });
     });
 };
 
@@ -132,6 +140,7 @@ watch(
     }
   },
   {
+    deep: true,
     immediate: true,
   }
 );

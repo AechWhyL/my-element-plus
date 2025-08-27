@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, test } from "vitest";
+import { describe, it, expect, vi, test, beforeEach } from "vitest";
 import HForm from "../Form.vue";
 import { mount } from "@vue/test-utils";
 import { defineComponent, nextTick, reactive } from "vue";
@@ -309,6 +309,97 @@ describe("Form", () => {
         console.log(index,item.text());
         expect(item.isVisible()).toBe(false);
       });
+    });
+  });
+  describe("validate事件", () => {
+    const onValidate = vi.fn();
+    beforeEach(() => {
+      onValidate.mockClear();
+    });
+    it("单个字段验证时应该触发validate事件", async () => {
+      const model: Record<string, any> = {
+        name: 20,
+        age: "18",
+      };
+      const wrapper = createTestComp(
+        {
+          model,
+          rules: {
+            name: [
+              {
+                type: "string",
+                message: "name is required and must be a string",
+              },
+            ],
+            age: [
+              {
+                type: "number",
+                message: "age is required and must be a number",
+              },
+            ],
+          },
+          validateOnRuleChange: false,
+        },
+        [
+          {
+            prop: "age",
+          },
+        ]
+      );
+      
+      // 等待组件完全挂载和初始化
+      await nextTick();
+      
+      // 第一次验证：验证失败
+      await wrapper.vm.validateField("age");
+      
+      expect(wrapper.emitted("validate")).toBeDefined();
+      expect(wrapper.emitted("validate")?.length).toBe(1)
+    });
+
+    it("整个表单验证时应该触发validate事件", async () => {
+      const model: Record<string, any> = {
+        name: 20,
+        age: "18",
+      };
+      const wrapper = createTestComp(
+        {
+          model,
+          rules: {
+            name: [
+              {
+                type: "string",
+                message: "name is required and must be a string",
+              },
+            ],
+            age: [
+              {
+                type: "number",
+                message: "age is required and must be a number",
+              },
+            ],
+          },
+          validateOnRuleChange: false,
+        },
+        [
+          {
+            prop: "name",
+          },
+          {
+            prop: "age",
+          },
+        ]
+      );
+      
+      // 等待组件完全挂载和初始化
+      await nextTick();
+
+      // 第一次验证：验证失败
+      await wrapper.vm.validate();
+      await nextTick();
+      
+      expect(wrapper.emitted("validate")).toBeDefined();
+      expect(wrapper.emitted("validate")?.length).toBe(1)
     });
   });
 });

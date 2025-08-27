@@ -37,9 +37,13 @@ import {
   unref,
   watch,
 } from "vue";
-import type { FormItemProps, FormItemTrigger, FormItemValidateStatus } from "./type";
+import type {
+  FormItemProps,
+  FormItemTrigger,
+  FormItemValidateStatus,
+} from "./type";
 import { FORM_CONTEXT_KEY, FORM_ITEM_CONTEXT_KEY } from "./constants";
-import { isArray, merge } from "lodash-es";
+import { isArray, isNumber, merge } from "lodash-es";
 import MessageTransition from "./MessageTransition.vue";
 defineOptions({
   name: "HFormItem",
@@ -80,19 +84,17 @@ const updateLabelWidth = (maxWidth: number) => {
 };
 
 const labelWidth = computed(() => {
-  if (props.labelWidth !== undefined) return props.labelWidth;
-  if (formContext?.labelWidth) return formContext.labelWidth;
-  return;
+  let w = undefined;
+  if (props.labelWidth !== undefined) w = props.labelWidth;
+  if (formContext?.labelWidth) w = formContext.labelWidth;
+  if (isNumber(w)) w = `${w}px`;
+  return w;
 });
 
 const computedLabelWrapperStyle = computed(() => {
-  console.log("maxLabelWrapperWidth.value", maxLabelWrapperWidth.value);
   if (!maxLabelWrapperWidth.value) return {};
-  console.log({
-    width: maxLabelWrapperWidth.value,
-  });
   return {
-    width: maxLabelWrapperWidth.value + "px",
+    width: `${maxLabelWrapperWidth.value}px`,
   };
 });
 

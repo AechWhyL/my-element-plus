@@ -1,7 +1,6 @@
-import type { CSSProperties, Reactive, Ref } from "vue";
+import type { CSSProperties, Ref } from "vue";
 import type {
   RuleItem,
-  Rules,
   ValidateFieldsError,
   ValidateResult,
 } from "async-validator";
@@ -26,7 +25,7 @@ export interface FormItemProps {
   label?: string;
   labelWidth?: CSSProperties["width"] | "auto";
   prop?: string;
-  rules?: FormItemRule[];
+  rules?: Arrayable<FormItemRule>;
   showMessage?: boolean;
   labelPosition?: "left" | "right" | "top" | "bottom";
 }
@@ -59,6 +58,10 @@ export interface FormProps {
   labelWidth?: FormItemProps["labelWidth"];
 }
 
+export interface FormEmits {
+  (e: "validate", result: FormValidateEvent): void;
+}
+
 export interface FormExpose {
   validate: (cb?: FormValidateCallback) => Promise<ValidateResult>;
   validateField: (prop: string, cb?: FormValidateCallback) => Promise<void>;
@@ -67,4 +70,9 @@ export interface FormExpose {
 
 export interface FormValidateCallback {
   (valid: boolean, errFields?: ValidateFieldsError): void;
+}
+
+export interface FormValidateEvent {
+  valid: boolean;
+  fields: ValidateFieldsError;
 }

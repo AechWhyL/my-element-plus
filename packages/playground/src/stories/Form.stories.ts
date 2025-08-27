@@ -1,10 +1,20 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { HForm, HFormItem, HInput, ErButton, ErButtonGroup, HMessage } from "hyl-fake-element-plus";
+import {
+  HForm,
+  HFormItem,
+  HInput,
+  ErButton,
+  ErButtonGroup,
+  HMessage,
+  HModal,
+} from "hyl-fake-element-plus";
 import { ref, reactive } from "vue";
 import "hyl-fake-element-plus/dist/es/styles/index.css";
 import "hyl-fake-element-plus/dist/es/styles/Form.css";
 import "hyl-fake-element-plus/dist/es/styles/Input.css";
 import "hyl-fake-element-plus/dist/es/styles/Button.css";
+import "hyl-fake-element-plus/dist/es/styles/Message.css";
+import "hyl-fake-element-plus/dist/es/styles/Modal.css";
 
 const meta: Meta<typeof HForm> = {
   title: "Components/Form",
@@ -205,7 +215,7 @@ export const Validation: Story = {
 // 实时验证示例
 export const RealTimeValidation: Story = {
   render: (args) => ({
-    components: { HForm, HFormItem, HInput, ErButton },
+    components: { HForm, HFormItem, HInput, ErButton, HMessage },
     setup() {
       const formRef = ref();
       const formData = reactive({
@@ -216,24 +226,40 @@ export const RealTimeValidation: Story = {
 
       const rules = {
         username: [
-          { required: true, message: "请输入用户名", trigger: "change" },
+          {
+            required: true,
+            message: "请输入用户名",
+            trigger: ["change", "blur"],
+          },
           {
             min: 3,
             max: 20,
             message: "用户名长度在 3 到 20 个字符",
-            trigger: "change",
+            trigger: ["change", "blur"],
           },
         ],
         email: [
-          { required: true, message: "请输入邮箱地址", trigger: "change" },
-          { type: "email", message: "请输入正确的邮箱地址", trigger: "change" },
+          {
+            required: true,
+            message: "请输入邮箱地址",
+            trigger: ["change", "blur"],
+          },
+          {
+            type: "email",
+            message: "请输入正确的邮箱地址",
+            trigger: ["change", "blur"],
+          },
         ],
         phone: [
-          { required: true, message: "请输入手机号", trigger: "change" },
+          {
+            required: true,
+            message: "请输入手机号",
+            trigger: ["change", "blur"],
+          },
           {
             pattern: /^1[3-9]\d{9}$/,
             message: "请输入正确的手机号",
-            trigger: "change",
+            trigger: ["change", "blur"],
           },
         ],
       };
@@ -241,9 +267,14 @@ export const RealTimeValidation: Story = {
       const handleSubmit = async () => {
         await formRef.value?.validate((valid: boolean, errors: any) => {
           if (valid) {
-            console.log("验证通过，表单提交:", formData);
+            HMessage({
+              message: "验证通过，表单提交",
+              type: "success",
+            });
           } else {
-            console.log("验证失败:", errors);
+            HMessage({
+              message: "验证失败",
+            });
           }
         });
       };
@@ -252,6 +283,7 @@ export const RealTimeValidation: Story = {
     },
     template: `
       <div style="max-width: 500px;">
+        <h3>change和blur事件均触发校验示例</h3>
         <HForm 
           ref="formRef"
           :model="formData"
@@ -264,6 +296,7 @@ export const RealTimeValidation: Story = {
               placeholder="请输入用户名"
               clearable
             />
+            <ErButton type="primary" @click="formRef.clearValidate('username')">清空用户名验证</ErButton>
           </HFormItem>
           
           <HFormItem label="邮箱" prop="email" label-width="100px">
@@ -273,6 +306,7 @@ export const RealTimeValidation: Story = {
               placeholder="请输入邮箱"
               clearable
             />
+            <ErButton type="primary" @click="formRef.clearValidate('email')">清空邮箱验证</ErButton>
           </HFormItem>
           
           <HFormItem label="手机号" prop="phone" label-width="100px">
@@ -282,10 +316,12 @@ export const RealTimeValidation: Story = {
               placeholder="请输入手机号"
               clearable
             />
+            <ErButton type="primary" @click="formRef.clearValidate('phone')">清空手机号验证</ErButton>
           </HFormItem>
           
           <HFormItem label-width="100px">
             <ErButton type="primary" @click="handleSubmit">提交</ErButton>
+            <ErButton type="primary" @click="formRef.clearValidate()">清空所有验证</ErButton>
           </HFormItem>
         </HForm>
         
@@ -307,11 +343,66 @@ export const RealTimeValidation: Story = {
   },
 };
 
+export const ModalForm: Story = {
+  render: (args) => ({
+    components: { HForm, HFormItem, HInput, ErButton, HMessage,HModal },
+    setup() {
+      const visible = ref(false);
+      const formRef = ref();
+      const formData = reactive({
+        username: "",
+        password: "",
+      });
+      const rules = {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+        ],
+      };
+      const handleSubmit = async () => {
+        await formRef.value?.validate((valid: boolean, errors: any) => {
+          if (valid) {
+            visible.value = false;
+            HMessage({
+              message: `验证通过，表单提交:${JSON.stringify(formData)}`,
+              type: "success",
+            });
+          } else {
+            HMessage({
+              message: "验证失败",
+            });
+          }
+        });
+      };
+      return { args, visible, formData, rules, handleSubmit,formRef };
+    },
+    template: `
+      <div>
+        <ErButton type="primary" @click="visible = true">打开表单</ErButton>
+        <HModal :visible="visible" title="表单">
+          <HForm ref="formRef" :model="formData" :rules="rules" label-width="auto">
+            <HFormItem label="用户名" prop="username">
+              <HInput v-model="formData.username" placeholder="请输入用户名" clearable />
+            </HFormItem>
+            <HFormItem label="密码" prop="password">
+              <HInput v-model="formData.password" placeholder="请输入密码" clearable />
+            </HFormItem>
+            <HFormItem>
+              <ErButton type="primary" @click="handleSubmit">提交</ErButton>
+            </HFormItem>
+          </HForm>
+        </HModal>
+      </div>
+    `,
+  }),
+};
 
 // 标签位置布局展示
 export const LabelPositions: Story = {
   render: (args) => ({
-    components: { HForm, HFormItem, HInput, ErButton, ErButtonGroup,HMessage },
+    components: { HForm, HFormItem, HInput, ErButton, ErButtonGroup, HMessage },
     setup() {
       const positions = ["left", "right", "top", "bottom"];
       const position = ref("");
@@ -414,129 +505,6 @@ export const LabelPositions: Story = {
     `,
   }),
   args: {
-    labelWidth: "auto",
-    itemLabel: "用户名",
-    itemLabelWidth: "100px",
-    itemProp: "username",
-    itemShowMessage: true,
-    itemLabelPosition: "left",
-  },
-};
-
-// 新增：Props Controls 演示
-export const PropsControls: Story = {
-  render: (args) => ({
-    components: { HForm, HFormItem, HInput, ErButton },
-    setup() {
-      const formRef = ref();
-      const formData = reactive({
-        username: "",
-        email: "",
-        description: "",
-      });
-
-      const rules = {
-        username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 3, max: 20, message: "用户名长度在 3 到 20 个字符", trigger: "blur" },
-        ],
-        email: [
-          { required: true, message: "请输入邮箱地址", trigger: "blur" },
-          { type: "email", message: "请输入正确的邮箱地址", trigger: "blur" },
-        ],
-        description: [
-          { required: true, message: "请输入描述信息", trigger: "blur" },
-        ],
-      };
-
-      const handleSubmit = async () => {
-        formRef.value?.validate((valid: boolean, errors: any) => {
-          if (valid) {
-            console.log("验证通过，表单提交:", formData);
-          } else {
-            console.log("验证失败:", errors);
-          }
-        });
-      };
-
-      return { formRef, formData, rules, handleSubmit, args };
-    },
-    template: `
-      <div style="max-width: 600px;">
-        <h3 style="margin-bottom: 20px; color: #409eff;">Props Controls 演示</h3>
-        <p style="margin-bottom: 20px; color: #666;">
-          使用右侧的 Controls 面板来调整以下属性：
-        </p>
-        
-        <HForm 
-          ref="formRef"
-          :model="formData"
-          :rules="rules"
-          :validate-on-rule-change="args.validateOnRuleChange"
-          :label-width="args.labelWidth"
-        >
-          <HFormItem 
-            :label="args.itemLabel || '用户名'" 
-            :prop="args.itemProp || 'username'" 
-            :label-width="args.itemLabelWidth || '100px'"
-            :show-message="args.itemShowMessage !== false"
-            :label-position="args.itemLabelPosition || 'left'"
-          >
-            <HInput 
-              v-model="formData.username" 
-              placeholder="请输入用户名"
-              clearable
-            />
-          </HFormItem>
-          
-          <HFormItem 
-            label="邮箱" 
-            prop="email" 
-            :label-width="args.itemLabelWidth || '100px'"
-            :show-message="args.itemShowMessage !== false"
-            :label-position="args.itemLabelPosition || 'left'"
-          >
-            <HInput 
-              v-model="formData.email" 
-              type="email"
-              placeholder="请输入邮箱"
-              clearable
-            />
-          </HFormItem>
-          
-          <HFormItem 
-            label="描述" 
-            prop="description" 
-            :label-width="args.itemLabelWidth || '100px'"
-            :show-message="args.itemShowMessage !== false"
-            :label-position="args.itemLabelPosition || 'left'"
-          >
-            <HInput 
-              v-model="formData.description" 
-              placeholder="请输入描述信息"
-              clearable
-            />
-          </HFormItem>
-          
-          <HFormItem :label-width="args.itemLabelWidth || '100px'">
-            <ErButton type="primary" @click="handleSubmit">提交</ErButton>
-          </HFormItem>
-        </HForm>
-        
-        <div style="margin-top: 20px; background: #f5f5f5; padding: 16px; border-radius: 4px;">
-          <h4 style="margin-top: 0;">当前 Props 配置:</h4>
-          <pre style="margin: 0; white-space: pre-wrap;">{{ JSON.stringify(args, null, 2) }}</pre>
-        </div>
-        
-        <div style="margin-top: 20px; background: #f5f5f5; padding: 16px; border-radius: 4px;">
-          <h4 style="margin-top: 0;">表单数据:</h4>
-          <pre style="margin: 0; white-space: pre-wrap;">{{ JSON.stringify(formData, null, 2) }}</pre>
-        </div>
-      </div>
-    `,
-  }),
-  args: {
-    validateOnRuleChange: true,
     labelWidth: "auto",
     itemLabel: "用户名",
     itemLabelWidth: "100px",

@@ -24,6 +24,8 @@ describe("FormItem", () => {
             rules: mockRules,
             validateField: mockValidateField,
             validate: mockValidate,
+            addFormItemContext: vi.fn(),
+            removeFormItemContext: vi.fn(),
           },
         },
       },
@@ -106,6 +108,7 @@ describe("FormItem", () => {
       formItemContext = undefined;
       mockValidateField.mockClear();
       mockValidate.mockClear();
+      mockRules.value = {};
     });
     test("子组件触发校验", async () => {
       createTestComp({
@@ -116,6 +119,18 @@ describe("FormItem", () => {
           { message: "test change message", trigger: "change" },
         ],
       });
+      formItemContext?.onValidateTrigger("blur");
+      expect(mockValidateField).toHaveBeenCalledTimes(1);
+      formItemContext?.onValidateTrigger("change");
+      expect(mockValidateField).toHaveBeenCalledTimes(2);
+    });
+    it("可以同时有多种触发校验时机", async () => {
+      createTestComp({
+        label: "test",
+        prop: "test",
+        rules: { required: true, message: "test message", trigger: ["blur", "change"] },
+      });
+      expect(mockValidateField).toHaveBeenCalledTimes(0);
       formItemContext?.onValidateTrigger("blur");
       expect(mockValidateField).toHaveBeenCalledTimes(1);
       formItemContext?.onValidateTrigger("change");
@@ -159,39 +174,36 @@ describe("FormItem", () => {
   });
 
   describe("标签宽度控制", () => {
-    it("labelWidth为auto时应该设置width为auto", () => {
+    it.each([
+      "auto",
+      "150px",
+    ] as FormItemProps["labelWidth"][])(
+      "labelWidth为%s时应该设置width为%s",
+      (labelWidth) => {
       const wrapper = createTestComp({
         label: "test",
-        labelWidth: "auto",
+        labelWidth,
       });
       const label = wrapper.find(".h-form-item-label");
-      expect(label.attributes("style")).toContain("width: auto");
+      console.log(label.attributes("style"));
+      expect(label.attributes("style")).toContain(`width: ${labelWidth}`);
     });
-
     it("labelWidth为数字时应该转换为像素", () => {
       const wrapper = createTestComp({
         label: "test",
-        labelWidth: 120,
+        labelWidth: 150,
       });
       const label = wrapper.find(".h-form-item-label");
-      expect(label.attributes("style")).toContain("width: 120px");
-    });
-
-    it("labelWidth为字符串时应该直接使用", () => {
-      const wrapper = createTestComp({
-        label: "test",
-        labelWidth: "150px",
-      });
-      const label = wrapper.find(".h-form-item-label");
+      console.log(label.attributes("style"));
       expect(label.attributes("style")).toContain("width: 150px");
     });
-
     it("未设置labelWidth时不应该设置width样式", () => {
       const wrapper = createTestComp({
         label: "test",
       });
       const label = wrapper.find(".h-form-item-label");
-      expect(label.attributes("style")).not.toContain("width:");
+      console.log(label.attributes("style"));
+      expect(label.attributes("style")).toBeUndefined();
     });
   });
 });
