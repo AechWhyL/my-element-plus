@@ -1,0 +1,113 @@
+/* Form 组件样式 */
+.h-form {
+  display: block;
+}
+
+.h-form-item {
+  display: flex;
+  margin-bottom: 18px;
+  align-items: flex-start;
+}
+
+/* 标签位置样式 - 重新设计 */
+.h-form-item--label-left {
+  flex-direction: row;
+}
+
+.h-form-item--label-right {
+  flex-direction: row;
+}
+
+.h-form-item--label-top {
+  flex-direction: column;
+}
+
+.h-form-item--label-bottom {
+  flex-direction: row;
+}
+
+.h-form-item__label-wrapper{
+  display: flex;
+  padding: 0 12px 0 0;
+  box-sizing: border-box;
+}
+
+.h-form-item-label {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+  font-size: 14px;
+  color: #606266;
+  line-height: 40px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+/* 左侧标签样式（默认） */
+.h-form-item--label-left .h-form-item__label-wrapper {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+/* 右侧对齐标签样式 */
+.h-form-item--label-right .h-form-item__label-wrapper {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+/* 底部对齐标签样式 */
+.h-form-item--label-bottom .h-form-item__label-wrapper {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+/* 上方标签样式 */
+.h-form-item--label-top .h-form-item__label-wrapper {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.h-form-item-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  line-height: 40px;
+  position: relative;
+  font-size: 14px;
+  min-width: 0;
+}
+
+.h-form-item-content-inner {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+}
+
+.h-form-item-message {
+  font-size: 11px;
+  color: #f56c6c;
+  line-height: 1;
+  padding-top: 4px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+}
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+  .h-form-item--label-left,
+  .h-form-item--label-right,
+  .h-form-item--label-bottom {
+    flex-direction: column;
+  }
+  
+  .h-form-item--label-left .h-form-item__label-wrapper,
+  .h-form-item--label-right .h-form-item__label-wrapper,
+  .h-form-item--label-bottom .h-form-item__label-wrapper {
+    justify-content: flex-start;
+  }
+  
+  .h-form-item-content {
+    line-height: 1.5;
+  }
+}

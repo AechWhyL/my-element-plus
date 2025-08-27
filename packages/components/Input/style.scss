@@ -6,8 +6,14 @@
   width: 100%;
   border: 1px solid var(--h-input-border-color, #dcdfe6);
   border-radius: 4px;
-  transition: border-color 0.2s;
+  transition: all 0.2s ease-in-out;
   box-sizing: border-box;
+  
+  // 定义CSS变量
+  --h-input-border-color: #dcdfe6;
+  --h-input-border-color-hover: #c0c4cc;
+  --h-input-border-color-focus: #409eff;
+  --h-input-border-color-disabled: #e4e7ed;
   
   // 尺寸变体
   &--large {
@@ -52,29 +58,34 @@
     }
   }
   
-  // 状态样式
-  &.is-focused {
-    border-color: var(--h-input-border-color-focus, #409eff);
+  // 状态样式 - 使用更高的优先级确保focus状态不被覆盖
+  &:hover:not(.is-focused):not(.is-disabled) {
+    border-color: var(--h-input-border-color-hover);
   }
   
+  // focus状态优先级最高
+  &.is-focused {
+    border-color: var(--h-input-border-color-focus) !important;
+    box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2);
+  }
+  
+  // 禁用状态
   &.is-disabled {
     background-color: #f5f7fa;
-    border-color: #e4e7ed;
+    border-color: var(--h-input-border-color-disabled);
     color: #c0c4cc;
     cursor: not-allowed;
   }
   
+  // 只读状态
   &.is-readonly {
     background-color: #f5f7fa;
     cursor: default;
   }
   
+  // 圆角样式
   &.is-round {
     border-radius: 20px;
-  }
-  
-  &:hover {
-    border-color: var(--h-input-border-color-hover, #c0c4cc);
   }
 }
 

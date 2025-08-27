@@ -24,10 +24,11 @@ export interface FormRules {
 
 export interface FormItemProps {
   label?: string;
-  labelWidth?: CSSProperties["width"];
+  labelWidth?: CSSProperties["width"] | "auto";
   prop?: string;
   rules?: FormItemRule[];
   showMessage?: boolean;
+  labelPosition?: "left" | "right" | "top" | "bottom";
 }
 
 export interface FormItemContext {
@@ -35,18 +36,27 @@ export interface FormItemContext {
   onValidateTrigger: (trigger: FormItemTrigger, value?: any) => void;
 }
 
+export interface InternalFormItemContext {
+  el: HTMLElement;
+  updateLabelWidth: (maxWidth: number) => void;
+}
+
 export interface FormContext {
   rules: Ref<FormRules | undefined>;
   validateErrors: Ref<ValidateFieldsError | undefined>;
   validateFieldErrors: Ref<ValidateFieldsError | undefined>;
+  labelWidth?: FormItemProps["labelWidth"];
   validateField: (prop: string, cb?: FormValidateCallback) => void;
   disabled?: Ref<boolean>;
+  addFormItemContext: (context: InternalFormItemContext) => number;
+  removeFormItemContext: (index: number) => void;
 }
 
 export interface FormProps {
   model?: Record<string, any>;
   rules?: FormRules;
   validateOnRuleChange?: boolean;
+  labelWidth?: FormItemProps["labelWidth"];
 }
 
 export interface FormExpose {

@@ -10,12 +10,13 @@ import type {
   FormProps,
   FormRules,
   FormValidateCallback,
+  InternalFormItemContext,
 } from "./type";
 import Schema, { type ValidateFieldsError } from "async-validator";
 import { FORM_CONTEXT_KEY } from "./constants";
-import { provide, ref, unref, watch } from "vue";
+import { nextTick, provide, ref, unref, watch } from "vue";
 import { isArray, pick } from "lodash-es";
-import type { Arrayable } from "@/utils";
+import type { Arrayable } from "@hyl-fake-element-plus/utils";
 
 defineOptions({
   name: "HForm",
@@ -28,6 +29,40 @@ const rules = ref<FormRules>({});
 const schema = ref<Schema>();
 const validateErrors = ref<ValidateFieldsError>();
 const validateFieldErrors = ref<ValidateFieldsError>({});
+const formItemContexts = ref<InternalFormItemContext[]>([]);
+
+const addFormItemContext = (context: InternalFormItemContext) => {
+  formItemContexts.value.push(context);
+  return formItemContexts.value.length;
+};
+
+const removeFormItemContext = (index: number) => {
+  formItemContexts.value.splice(index, 1);
+};
+
+const mesureMaxFormItemWidth = () => {
+  let width = 0;
+  formItemContexts.value.forEach(({ el }) => {
+    const label = el.querySelector(
+      ".h-form-item__label-wrapper"
+    ) as HTMLElement;
+    if (label) {
+      const originalDisplay = label.style.display;
+      label.style.display = "inline-block";
+      const itemWidth = label.offsetWidth;
+      label.style.display = originalDisplay;
+      width = Math.max(width, itemWidth);
+    }
+  });
+  return width;
+};
+
+const updateFormItemWidth = () => {
+  const maxWidth = mesureMaxFormItemWidth();;
+  formItemContexts.value.forEach(({ updateLabelWidth }) => {
+    updateLabelWidth(maxWidth);
+  });
+};
 
 const validate = async (cb?: FormValidateCallback) => {
   if (!unref(schema) || !props.model) return;
@@ -59,7 +94,7 @@ const validateField = async (prop: string, cb?: FormValidateCallback) => {
     .catch(({ errors, fields }) => {
       cb?.(false, fields);
       validateErrors.value = errors;
-      validateFieldErrors.value[prop] = errors;
+      validateFieldErrors.value[prop] = fields[prop];
     });
 };
 
@@ -101,11 +136,24 @@ watch(
   }
 );
 
+watch(formItemContexts, () => {
+  if (props.labelWidth === "auto") {
+    updateFormItemWidth();
+    }
+  },
+  {
+    deep: true,
+    immediate: true,
+  }
+);
+
 provide(FORM_CONTEXT_KEY, {
   rules,
   validateErrors,
   validateFieldErrors,
   validateField,
+  addFormItemContext,
+  removeFormItemContext,
 });
 defineExpose<FormExpose>({
   validate,
@@ -114,4 +162,6 @@ defineExpose<FormExpose>({
 });
 </script>
 
-<style scoped></style>
+<style>
+@import "./style.css";
+</style>

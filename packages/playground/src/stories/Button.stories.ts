@@ -126,6 +126,7 @@ export const Group: Story & { args: { content1: string; content2: string } } = {
     template: container(`
        <er-button-group :type="args.groupType" :size="args.groupSize" :disabled="args.groupDisabled">
          <er-button v-bind="args">{{args.content1}}</er-button>
+         <er-button v-bind="args">{{args.content2}}</er-button>
        </er-button-group>
     `),
   }),

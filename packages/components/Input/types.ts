@@ -34,6 +34,9 @@ export interface InputProps {
   
   // 密码特有属性
   showPassword?: boolean;
+
+  // 是否触发表单验证
+  validateEvent?: boolean;
 }
 
 export interface InputEmits {

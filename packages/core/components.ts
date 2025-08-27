@@ -8,6 +8,8 @@ import {
   HTooltip,
   HMessage,
   HInput,
+  HForm,
+  HFormItem,
 } from "@hyl-fake-element-plus/components";
 import type { Plugin } from "vue";
 
@@ -21,4 +23,6 @@ export default [
   HTooltip,
   HMessage,
   HInput,
+  HForm,
+  HFormItem,
 ] as Plugin[];

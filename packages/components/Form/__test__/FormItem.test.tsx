@@ -6,7 +6,7 @@ import { FORM_CONTEXT_KEY, FORM_ITEM_CONTEXT_KEY } from "../constants";
 import { defineComponent, inject, nextTick, ref } from "vue";
 import type { ValidateFieldsError } from "async-validator";
 
-const mockValidateErrors = ref<ValidateFieldsError>();
+const mockValidateFieldErrors = ref<ValidateFieldsError>();
 const mockRules = ref<FormRules>({});
 const mockValidate = vi.fn();
 const mockValidateField = vi.fn();
@@ -20,7 +20,7 @@ describe("FormItem", () => {
       global: {
         provide: {
           [FORM_CONTEXT_KEY]: {
-            validateErrors: mockValidateErrors,
+            validateFieldErrors: mockValidateFieldErrors,
             rules: mockRules,
             validateField: mockValidateField,
             validate: mockValidate,
@@ -47,22 +47,26 @@ describe("FormItem", () => {
   });
   describe("错误信息", () => {
     beforeEach(() => {
-      mockValidateErrors.value = undefined;
+      mockValidateFieldErrors.value = undefined;
     });
     it("should render error message", async () => {
       const wrapper = createTestComp({
         label: "test",
         prop: "test",
       });
-      mockValidateErrors.value = {
+      mockValidateFieldErrors.value = {
         test: [
           {
             message: "error message",
+          },
+          {
+            message: "error message 2",
           },
         ],
       };
       await nextTick();
       expect(wrapper.find(".h-form-item-message").isVisible()).toBe(true);
+      expect(wrapper.find(".h-form-item-message").text()).toBe("error message");
     });
     it("should not render error message when showMessage is false", async () => {
       const wrapper = createTestComp({
@@ -70,7 +74,7 @@ describe("FormItem", () => {
         prop: "test",
         showMessage: false,
       });
-      mockValidateErrors.value = {
+      mockValidateFieldErrors.value = {
         test: [
           {
             message: "error message",
@@ -84,7 +88,7 @@ describe("FormItem", () => {
       const wrapper = createTestComp({
         label: "test",
       });
-      mockValidateErrors.value = {
+      mockValidateFieldErrors.value = {
         name: [
           {
             message: "please input name",
@@ -124,6 +128,70 @@ describe("FormItem", () => {
       });
       formItemContext?.onValidateTrigger("blur");
       expect(mockValidateField).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("标签位置布局", () => {
+    it.each([
+      "left",
+      "right",
+      "top",
+      "bottom",
+    ] as FormItemProps["labelPosition"][])(
+      "默认应该应用label-%s类",
+      (labelPosition) => {
+        const wrapper = createTestComp({
+          label: "test",
+          labelPosition,
+        });
+        expect(wrapper.classes()).toContain(
+          `h-form-item--label-${labelPosition}`
+        );
+      }
+    );
+
+    it("应该渲染content-inner包装器", () => {
+      const wrapper = createTestComp({
+        label: "test",
+      });
+      expect(wrapper.find(".h-form-item-content-inner").exists()).toBe(true);
+    });
+  });
+
+  describe("标签宽度控制", () => {
+    it("labelWidth为auto时应该设置width为auto", () => {
+      const wrapper = createTestComp({
+        label: "test",
+        labelWidth: "auto",
+      });
+      const label = wrapper.find(".h-form-item-label");
+      expect(label.attributes("style")).toContain("width: auto");
+    });
+
+    it("labelWidth为数字时应该转换为像素", () => {
+      const wrapper = createTestComp({
+        label: "test",
+        labelWidth: 120,
+      });
+      const label = wrapper.find(".h-form-item-label");
+      expect(label.attributes("style")).toContain("width: 120px");
+    });
+
+    it("labelWidth为字符串时应该直接使用", () => {
+      const wrapper = createTestComp({
+        label: "test",
+        labelWidth: "150px",
+      });
+      const label = wrapper.find(".h-form-item-label");
+      expect(label.attributes("style")).toContain("width: 150px");
+    });
+
+    it("未设置labelWidth时不应该设置width样式", () => {
+      const wrapper = createTestComp({
+        label: "test",
+      });
+      const label = wrapper.find(".h-form-item-label");
+      expect(label.attributes("style")).not.toContain("width:");
     });
   });
 });

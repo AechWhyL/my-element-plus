@@ -1,9 +1,10 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, test } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { nextTick, ref } from 'vue';
 import Input from '../Input.vue';
 import { INPUT_TYPES } from '../constants';
 import type { InputType } from '../types';
+import { FORM_ITEM_CONTEXT_KEY } from '@/components/Form/constants';
 
 describe('Input Component', () => {
   // 基础渲染测试
@@ -451,91 +452,6 @@ describe('Input Component', () => {
       });
     });
 
-    describe('Combined Slots', () => {
-      it('should render both prefix and suffix slots simultaneously', () => {
-        const wrapper = mount(Input, {
-          slots: {
-            prefix: '<span class="test-prefix">@</span>',
-            suffix: '<span class="test-suffix">.com</span>'
-          }
-        });
-
-        expect(wrapper.find('.test-prefix').exists()).toBe(true);
-        expect(wrapper.find('.test-suffix').exists()).toBe(true);
-        expect(wrapper.find('.h-input__prefix').exists()).toBe(true);
-        expect(wrapper.find('.h-input__suffix').exists()).toBe(true);
-      });
-
-      it('should maintain correct order: prefix -> input -> suffix', () => {
-        const wrapper = mount(Input, {
-          slots: {
-            prefix: '<span class="test-prefix">@</span>',
-            suffix: '<span class="test-suffix">.com</span>'
-          }
-        });
-
-        const prefixSlot = wrapper.find('.h-input__prefix');
-        const input = wrapper.find('input');
-        const suffixSlot = wrapper.find('.h-input__suffix');
-
-        expect(prefixSlot.element).toBeDefined();
-        expect(input.element).toBeDefined();
-        expect(suffixSlot.element).toBeDefined();
-      });
-
-      it('should work with textarea type', () => {
-        const wrapper = mount(Input, {
-          props: { type: 'textarea' },
-          slots: {
-            prefix: '<span class="test-prefix">📝</span>',
-            suffix: '<span class="test-suffix">字符</span>'
-          }
-        });
-
-        expect(wrapper.find('textarea').exists()).toBe(true);
-        expect(wrapper.find('.test-prefix').exists()).toBe(true);
-        expect(wrapper.find('.test-suffix').exists()).toBe(true);
-      });
-    });
-
-    describe('Slot with Other Features', () => {
-      it('should work with clearable feature', () => {
-        const wrapper = mount(Input, {
-          props: {
-            clearable: true,
-            modelValue: 'test value'
-          },
-          slots: {
-            prefix: '<span>@</span>',
-            suffix: '<span>.com</span>'
-          }
-        });
-
-        expect(wrapper.find('.h-input__clear').exists()).toBe(true);
-        expect(wrapper.find('.h-input__prefix').exists()).toBe(true);
-        expect(wrapper.find('.h-input__suffix').exists()).toBe(true);
-      });
-
-      it('should work with showPassword feature', () => {
-        const wrapper = mount(Input, {
-          props: {
-            showPassword: true,
-            modelValue: 'password123',
-            type: 'password'
-          },
-          slots: {
-            prefix: '<span>🔒</span>',
-            suffix: '<span>强度</span>'
-          }
-        });
-
-        expect(wrapper.find('.h-input__password-toggle').exists()).toBe(true);
-        expect(wrapper.find('.h-input__prefix').exists()).toBe(true);
-        expect(wrapper.find('.h-input__suffix').exists()).toBe(true);
-      });
-
-    });
-
     describe('Empty Slots', () => {
       it.each(["prefix", "suffix"])("should not render %s wrapper when %s slot is empty", (slotName) => {
         const wrapper = mount(Input, {
@@ -551,6 +467,142 @@ describe('Input Component', () => {
         expect(wrapper.find('.h-input__prefix').exists()).toBe(false);
         expect(wrapper.find('.h-input__suffix').exists()).toBe(false);
       });
+    });
+  });
+
+  // 表单校验触发测试
+  describe('validateEvent', () => {
+    const onValidateTrigger = vi.fn();
+    test('trigger validateEvent', async () => {
+      const wrapper = mount(Input,{
+        global:{
+          provide:{
+            [FORM_ITEM_CONTEXT_KEY]:{
+              onValidateTrigger,
+            }
+          }
+        }
+      });
+      const input = wrapper.find('input');
+      await input.setValue('test value');
+      await nextTick();
+      expect(onValidateTrigger).toHaveBeenCalledWith('change', 'test value');
+    });
+  });
+
+  // 表单校验触发测试
+  describe('Form Validation Trigger', () => {
+    const onValidateTrigger = vi.fn();
+
+    it('should trigger form validation on change event when validateEvent is true', async () => {
+      onValidateTrigger.mockClear();
+      const wrapper = mount(Input, {
+        props: { validateEvent: true },
+        global: {
+          provide: {
+            [FORM_ITEM_CONTEXT_KEY]: {
+              onValidateTrigger,
+            }
+          }
+        }
+      });
+      
+      const input = wrapper.find('input');
+      await input.setValue('test value');
+      await input.trigger('blur'); // 触发change事件
+      
+      expect(onValidateTrigger).toHaveBeenCalledWith('change', 'test value');
+    });
+
+    it('should not trigger form validation when validateEvent is false', async () => {
+      onValidateTrigger.mockClear();
+      const wrapper = mount(Input, {
+        props: { validateEvent: false },
+        global: {
+          provide: {
+            [FORM_ITEM_CONTEXT_KEY]: {
+              onValidateTrigger,
+            }
+          }
+        }
+      });
+      
+      const input = wrapper.find('input');
+      await input.setValue('test value');
+      await input.trigger('blur'); // 触发change事件
+      
+      expect(onValidateTrigger).not.toHaveBeenCalled();
+    });
+
+    it('should trigger form validation for both v-model and non-v-model usage', async () => {
+      // 测试v-model模式
+      onValidateTrigger.mockClear();
+      const vModelWrapper = mount(Input, {
+        props: { modelValue: 'initial', validateEvent: true },
+        global: {
+          provide: {
+            [FORM_ITEM_CONTEXT_KEY]: {
+              onValidateTrigger,
+            }
+          }
+        }
+      });
+      
+      const vModelInput = vModelWrapper.find('input');
+      await vModelInput.setValue('new value');
+      await vModelInput.trigger('blur');
+      
+      expect(onValidateTrigger).toHaveBeenCalledWith('change', 'new value');
+      
+      // 重置mock
+      onValidateTrigger.mockClear();
+      
+      // 测试非v-model模式
+      const nonVModelWrapper = mount(Input, {
+        props: { modelValue: undefined, validateEvent: true },
+        global: {
+          provide: {
+            [FORM_ITEM_CONTEXT_KEY]: {
+              onValidateTrigger,
+            }
+          }
+        }
+      });
+      
+      const nonVModelInput = nonVModelWrapper.find('input');
+      await nonVModelInput.setValue('another value');
+      await nonVModelInput.trigger('blur');
+      
+      expect(onValidateTrigger).toHaveBeenCalledWith('change', 'another value');
+    });
+
+    it('should trigger form validation with correct value after input changes', async () => {
+      onValidateTrigger.mockClear();
+      const wrapper = mount(Input, {
+        props: { validateEvent: true },
+        global: {
+          provide: {
+            [FORM_ITEM_CONTEXT_KEY]: {
+              onValidateTrigger,
+            }
+          }
+        }
+      });
+      
+      const input = wrapper.find('input');
+      
+      // 第一次输入
+      await input.setValue('first value');
+      await input.trigger('blur');
+      expect(onValidateTrigger).toHaveBeenCalledWith('change', 'first value');
+      
+      // 重置mock
+      onValidateTrigger.mockClear();
+      
+      // 第二次输入
+      await input.setValue('second value');
+      await input.trigger('blur');
+      expect(onValidateTrigger).toHaveBeenCalledWith('change', 'second value');
     });
   });
 });

@@ -80,7 +80,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, onMounted, useSlots } from "vue";
+import { computed, reactive, ref, onMounted, inject, watch } from "vue";
+import { FORM_ITEM_CONTEXT_KEY } from "../Form/constants";
 import type { InputProps, InputEmits } from "./types.js";
 import { useKeyEvents } from "../../hooks/useKeyEvents";
 import ErIcon from "../Icon/Icon.vue";
@@ -95,10 +96,12 @@ const props = withDefaults(defineProps<InputProps>(), {
   showWordLimit: false,
   autofocus: false,
   showPassword: false,
+  validateEvent: true,
   rows: 2,
 });
 
 const emit = defineEmits<InputEmits>();
+const formContext = inject(FORM_ITEM_CONTEXT_KEY, null);
 
 const inputRef = ref<HTMLInputElement>();
 const textareaRef = ref<HTMLTextAreaElement>();
@@ -122,14 +125,20 @@ const { bindKeyboardEvents } = useKeyEvents({
     Escape: (_event: KeyboardEvent) => {
       // 可以在这里添加Escape键的处理逻辑
       // 比如清空输入框或失去焦点
+      inputRef.value?.blur();
     },
   },
 });
 
 // 计算属性
 const inputValue = computed({
-  get: () => props.modelValue || "",
-  set: (value: string) => emit("update:modelValue", value),
+  get: () => {
+    return props.modelValue || "";
+  },
+  set: (value: string) => {
+    // 始终emit update:modelValue，让父组件决定是否使用
+    emit("update:modelValue", value);
+  },
 });
 
 const inputType = computed(() => {
@@ -171,11 +180,21 @@ const handleInput = (event: Event) => {
 
   emit("input", value);
   emit("update:modelValue", value);
+  if (props.validateEvent) {
+    formContext?.onValidateTrigger("change", value);
+  }
 };
 
 const handleChange = (event: Event) => {
   const target = event.target as HTMLInputElement | HTMLTextAreaElement;
-  emit("change", target.value);
+  const value = target.value;
+  
+  emit("change", value);
+  
+  // 在change事件后触发表单校验
+  if (props.validateEvent) {
+    formContext?.onValidateTrigger("change", value);
+  }
 };
 
 const handleFocus = (event: FocusEvent) => {
@@ -184,8 +203,12 @@ const handleFocus = (event: FocusEvent) => {
 };
 
 const handleBlur = (event: FocusEvent) => {
+  const target = event.target as HTMLInputElement | HTMLTextAreaElement;
   inputState.focused = false;
   emit("blur", event);
+  if (props.validateEvent) {
+    formContext?.onValidateTrigger("blur", target.value);
+  }
 };
 
 const handleKeydown = (event: KeyboardEvent) => {

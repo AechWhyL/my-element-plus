@@ -1,7 +1,7 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, test } from "vitest";
 import HForm from "../Form.vue";
 import { mount } from "@vue/test-utils";
-import { defineComponent, nextTick } from "vue";
+import { defineComponent, nextTick, reactive } from "vue";
 import HFormItem from "../FormItem.vue";
 import type {
   FormItemProps,
@@ -27,6 +27,7 @@ describe("Form", () => {
       slots: {
         default: formItemProps.map((item) => createFormItem(item)),
       },
+      attachTo: document.body,
     });
   };
   describe("expose", () => {
@@ -45,13 +46,13 @@ describe("Form", () => {
                 type: "string",
                 message: "name is required and must be a string",
               },
-            ] as FormItemRule,
+            ],
             age: [
               {
                 type: "number",
                 message: "age is required and must be a number",
               },
-            ] as FormItemRule,
+            ],
           },
         },
         [
@@ -63,6 +64,7 @@ describe("Form", () => {
       await wrapper.vm.validateField("age", cb);
       await nextTick();
       expect(wrapper.text()).toContain("age is required and must be a number");
+      expect(wrapper.text()).not.toContain("name is required and must be a string");
       expect(cb).toHaveBeenCalledTimes(1);
 
       model.age = 18;
@@ -202,6 +204,111 @@ describe("Form", () => {
       await wrapper.vm.validateField("name");
       await nextTick();
       expect(wrapper.text()).toContain("name is required and must be a string");
+    });
+  });
+  describe("组合测试", () => {
+    test("表单校验信息", async () => {
+      const model = reactive({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+      const wrapper = createTestComp(
+        {
+          model,
+          rules: {
+            name: [{ required: true, message: "name is required" }],
+            email: [
+              { required: true, message: "email is required" },
+              { type: "email", message: "email is invalid" },
+            ],
+            password: [
+              { required: true, message: "password is required" },
+              { min: 8, message: "password is too short" },
+            ],
+            confirmPassword: [
+              { required: true, message: "confirmPassword is required" },
+              {
+                required: true,
+                message: "confirmPassword is not equal to password",
+                validator: (rule, value, callback) => {
+                  if (value !== model.password) {
+                    callback("confirmPassword is not equal to password");
+                  } else {
+                    callback();
+                  }
+                },
+              },
+            ],
+          },
+        },
+        [
+          {
+            prop: "name",
+          },
+          {
+            prop: "email",
+          },
+          {
+            prop: "password",
+          },
+          {
+            prop: "confirmPassword",
+          },
+        ]
+      );
+      await nextTick();
+      await wrapper.vm.validate();
+
+      // initial state
+      expect(wrapper.text()).toContain("name is required");
+      expect(wrapper.text()).toContain("email is required");
+      expect(wrapper.text()).toContain("password is required");
+      expect(wrapper.text()).toContain("confirmPassword is required");
+
+      // password 校验
+      model.password = "123456";
+      await wrapper.vm.validateField("password");
+      expect(wrapper.text()).toContain("password is too short");
+      model.password = "123456789";
+      await wrapper.vm.validateField("password");
+      expect(wrapper.text()).not.toContain("password is too short");
+
+      model.confirmPassword = "1234567";
+      await wrapper.vm.validateField("confirmPassword");
+      expect(wrapper.text()).toContain(
+        "confirmPassword is not equal to password"
+      );
+      model.confirmPassword = "123456789";
+      await wrapper.vm.validateField("confirmPassword");
+      expect(wrapper.text()).not.toContain(
+        "confirmPassword is not equal to password"
+      );
+
+      // email 校验
+      model.email = "test@test";
+      await wrapper.vm.validateField("email");
+      expect(wrapper.text()).toContain("email is invalid");
+      model.email = "test@test.com";
+      await wrapper.vm.validateField("email");
+      expect(wrapper.text()).not.toContain("email is invalid");
+
+      // name 校验
+      model.name = "";
+      await wrapper.vm.validateField("name");
+      expect(wrapper.text()).toContain("name is required");
+      model.name = "test";
+      await wrapper.vm.validateField("name");
+      expect(wrapper.text()).not.toContain("name is required");
+
+      // 验证通过
+      await wrapper.vm.validate();
+      const messges = wrapper.findAll(".h-form-item-message")
+      messges.forEach((item,index) => {
+        console.log(index,item.text());
+        expect(item.isVisible()).toBe(false);
+      });
     });
   });
 });

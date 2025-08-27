@@ -6,3 +6,4 @@ export * from "./Tooltip";
 export * from "./Modal";
 export * from "./Message";
 export * from "./Input";
+export * from "./Form";
