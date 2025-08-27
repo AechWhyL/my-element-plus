@@ -13,7 +13,7 @@
         :type="inputType"
         :value="inputValue"
         :placeholder="placeholder"
-        :disabled="disabled"
+        :disabled="computedDisabled"
         :readonly="readonly"
         :maxlength="maxlength"
         :minlength="minlength"
@@ -35,7 +35,7 @@
         :class="inputClasses"
         :value="inputValue"
         :placeholder="placeholder"
-        :disabled="disabled"
+        :disabled="computedDisabled"
         :readonly="readonly"
         :maxlength="maxlength"
         :minlength="minlength"
@@ -61,7 +61,7 @@
 
     <!-- 清除按钮 -->
     <span
-      v-if="clearable && inputValue && !disabled"
+      v-if="clearable && inputValue && !computedDisabled"
       class="h-input__clear"
       @click="handleClear"
     >
@@ -70,7 +70,7 @@
 
     <!-- 密码显示切换 -->
     <span
-      v-if="showPassword && inputValue && !disabled"
+      v-if="showPassword && inputValue && !computedDisabled"
       class="h-input__password-toggle"
       @click="togglePasswordVisibility"
     >
@@ -80,8 +80,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, onMounted, inject, watch } from "vue";
-import { FORM_ITEM_CONTEXT_KEY } from "../Form/constants";
+import { computed, reactive, ref, onMounted, inject, watch, unref } from "vue";
+import { FORM_CONTEXT_KEY, FORM_ITEM_CONTEXT_KEY } from "../Form/constants";
 import type { InputProps, InputEmits } from "./types.js";
 import { useKeyEvents } from "../../hooks/useKeyEvents";
 import ErIcon from "../Icon/Icon.vue";
@@ -101,7 +101,8 @@ const props = withDefaults(defineProps<InputProps>(), {
 });
 
 const emit = defineEmits<InputEmits>();
-const formContext = inject(FORM_ITEM_CONTEXT_KEY, null);
+const formItemContext = inject(FORM_ITEM_CONTEXT_KEY, null);
+const formContext = inject(FORM_CONTEXT_KEY, null);
 
 const inputRef = ref<HTMLInputElement>();
 const textareaRef = ref<HTMLTextAreaElement>();
@@ -152,14 +153,24 @@ const inputType = computed(() => {
   return props.type;
 });
 
+const computedDisabled = computed<boolean>(() => {
+  // 如果没有Form上下文，直接使用props.disabled
+  if (!formContext?.disabled) {
+    return props.disabled;
+  }
+  // 如果有Form上下文且disabled属性存在，使用Form的disabled状态
+  return formContext.disabled.value;
+});
+
 const inputWrapperClasses = computed(() => [
   "h-input-wrapper",
   `h-input-wrapper--${props.size}`,
   {
     "is-focused": inputState.focused,
-    "is-disabled": props.disabled,
+    "is-disabled": computedDisabled.value,
     "is-readonly": props.readonly,
     "is-round": props.round,
+    "is-error": unref(formItemContext?.validateStatus) === "error",
   },
 ]);
 
@@ -168,7 +179,7 @@ const inputClasses = computed(() => [
   `h-input--${props.size}`,
   {
     "is-focused": inputState.focused,
-    "is-disabled": props.disabled,
+    "is-disabled": computedDisabled.value,
     "is-readonly": props.readonly,
   },
 ]);
@@ -181,7 +192,7 @@ const handleInput = (event: Event) => {
   emit("input", value);
   emit("update:modelValue", value);
   if (props.validateEvent) {
-    formContext?.onValidateTrigger("change", value);
+    formItemContext?.onValidateTrigger("change", value);
   }
 };
 
@@ -193,7 +204,7 @@ const handleChange = (event: Event) => {
   
   // 在change事件后触发表单校验
   if (props.validateEvent) {
-    formContext?.onValidateTrigger("change", value);
+    formItemContext?.onValidateTrigger("change", value);
   }
 };
 
@@ -207,7 +218,7 @@ const handleBlur = (event: FocusEvent) => {
   inputState.focused = false;
   emit("blur", event);
   if (props.validateEvent) {
-    formContext?.onValidateTrigger("blur", target.value);
+    formItemContext?.onValidateTrigger("blur", target.value);
   }
 };
 

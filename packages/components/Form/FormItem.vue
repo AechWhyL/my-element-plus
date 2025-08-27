@@ -37,7 +37,7 @@ import {
   unref,
   watch,
 } from "vue";
-import type { FormItemProps, FormItemTrigger } from "./type";
+import type { FormItemProps, FormItemTrigger, FormItemValidateStatus } from "./type";
 import { FORM_CONTEXT_KEY, FORM_ITEM_CONTEXT_KEY } from "./constants";
 import { isArray, merge } from "lodash-es";
 import MessageTransition from "./MessageTransition.vue";
@@ -49,7 +49,6 @@ const props = withDefaults(defineProps<FormItemProps>(), {
   labelPosition: "left",
 });
 const formItemRef = ref<HTMLElement | null>(null);
-const validateStatus = ref<"error" | "success">("success");
 const formContext = inject(FORM_CONTEXT_KEY, undefined)!;
 const rules = computed(() => {
   if (!formContext.rules.value || !props.prop) return [];
@@ -62,6 +61,10 @@ let itemIndex: number | undefined;
 const validateErrors = computed(() => {
   if (!props.prop) return;
   return formContext.validateFieldErrors?.value?.[props.prop];
+});
+
+const validateStatus = computed<FormItemValidateStatus>(() => {
+  return validateErrors.value?.length ? "error" : "success";
 });
 
 const message = computed(() => {
@@ -101,9 +104,7 @@ const onValidateTrigger = (trigger: FormItemTrigger) => {
   }
   itemRules.forEach((rule) => {
     if (rule.trigger === trigger || rule.trigger?.includes(trigger)) {
-      formContext.validateField(props.prop!, (valid) => {
-        validateStatus.value = valid ? "success" : "error";
-      });
+      formContext.validateField(props.prop!);
     }
   });
 };

@@ -14,6 +14,9 @@
   --h-input-border-color-hover: #c0c4cc;
   --h-input-border-color-focus: #409eff;
   --h-input-border-color-disabled: #e4e7ed;
+  --h-input-border-color-error: #f56c6c;
+  --h-input-border-color-error-hover: #f78989;
+  --h-input-border-color-error-focus: #f56c6c;
   
   // 尺寸变体
   &--large {
@@ -86,6 +89,20 @@
   // 圆角样式
   &.is-round {
     border-radius: 20px;
+  }
+  
+  // 错误状态样式
+  &.is-error {
+    border-color: var(--h-input-border-color-error);
+    
+    &:hover:not(.is-focused) {
+      border-color: var(--h-input-border-color-error-hover);
+    }
+    
+    &.is-focused {
+      border-color: var(--h-input-border-color-error-focus) !important;
+      box-shadow: 0 0 0 2px rgba(245, 108, 108, 0.2);
+    }
   }
 }
 
