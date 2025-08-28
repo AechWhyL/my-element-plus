@@ -1,6 +1,6 @@
 {
   "name": "hyl-fake-element-plus",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "vue3 component library",
   "main": "./dist/umd/index.umd.js",
   "module": "./dist/es/index.es.js",
@@ -22,11 +22,9 @@
     }
   },
   "scripts": {
-    "build": "run-s clean build-only move-style-to-root",
-    "build-only": "run-p build-umd build-es",
-    "build-umd": "vite build --config ./vite.umd.config.ts",
-    "build-es": "vite build --config ./vite.es.config.ts",
-    "move-style-to-root": "move-file dist/umd/index.css dist/index.css",
+    "build": "run-p build-umd build-es",
+    "build-umd": "rimraf dist/umd && vite build --config ./vite.umd.config.ts",
+    "build-es": "rimraf dist/es && vite build --config ./vite.es.config.ts",
     "clean": "rimraf dist",
     "release": "release-it"
   },

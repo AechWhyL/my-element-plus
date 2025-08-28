@@ -2,10 +2,11 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 import vuePlugin from "@vitejs/plugin-vue";
 import dts from "vite-plugin-dts";
+import cssBundle from "./vite-plugins/vite-plugin-css-bundle";
 import { readdir } from "fs/promises";
 
 const getComponents = async () => {
-  const excludeNames = ["coverage", "node_modules","__test__"];
+  const excludeNames = ["coverage", "node_modules", "__test__"];
   const files = await readdir(resolve(__dirname, "../components"), {
     withFileTypes: true,
   });
@@ -18,7 +19,7 @@ const getComponents = async () => {
     });
 };
 const components = await getComponents();
-console.log("found components:", components)
+console.log("found components:", components);
 
 export default defineConfig({
   plugins: [
@@ -26,6 +27,9 @@ export default defineConfig({
     dts({
       tsconfigPath: resolve(__dirname, "tsconfig.build.json"),
       outDir: "dist/types",
+    }),
+    cssBundle({
+      name: "main.css",
     }),
   ],
   build: {
