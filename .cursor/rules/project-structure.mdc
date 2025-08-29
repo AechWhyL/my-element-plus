@@ -1,0 +1,91 @@
+---
+alwaysApply: true
+---
+## 项目技术栈规范
+
+### 核心技术栈
+- **框架**: Vue 3.5+ (Composition API)
+- **构建工具**: Vite 5.4+
+- **包管理器**: pnpm 10.12+
+- **语言**: TypeScript 5.8+
+- **测试框架**: Vitest + Vue Test Utils
+- **样式**: CSS + Sass + PostCSS
+- **UI组件库**: 自研Element Plus风格组件库
+
+### 开发工具链
+- **代码质量**: TypeScript严格模式
+- **测试覆盖**: Vitest + jsdom
+- **文档**: Storybook
+- **Git钩子**: Husky
+- **发布**: release-it
+
+## 项目文件存放路径规范
+
+### Monorepo结构
+```
+my-elementplus/
+├── packages/
+│   ├── components/          # 组件库核心包
+│   ├── core/               # 核心功能包
+│   ├── hooks/              # 组合式函数包
+│   ├── utils/              # 工具函数包
+│   ├── theme/              # 主题样式包，存有全局css变量
+│   ├── docs/               # 文档包
+│   └── playground/         # 开发调试包
+```
+
+### 组件开发规范
+每个组件目录结构：
+```
+ComponentName/
+├── composables # 组件组合式api逻辑文件夹
+├── ComponentName.vue       # 主组件文件
+├── ComponentNameGroup.vue  # 组件组文件（如需要）
+├── ComponentNameTransition.vue # 过渡动画文件（如需要）
+├── index.ts               # 导出文件
+├── types.ts               # TypeScript类型定义
+├── style.css/scss         # 样式文件
+├── constants.ts           # 常量定义
+└── __test__/              # 组件测试文件目录
+    └── ComponentName.test.tsx
+```
+组件类名前缀规范：
+- h-, 如 "h-button"
+
+样式编写规范：
+- 对于用户比较可能需要更改的样式，尽量结合使用css变量实现，以便用户更改
+
+测试用例编写规范：
+- 以行为测试为导向，避免测试用例过多地与实现细节相耦合
+- 测试用例应尽量独立，不与其他测试用例相耦合
+
+### 文件命名规范
+- **组件文件**: PascalCase (如 `Button.vue`, `AlertTransition.vue`)
+- **工具文件**: camelCase (如 `useTooltip.ts`, `install.ts`)
+- **类型文件**: `types.ts`
+- **常量文件**: `constants.ts` 或 `constant.ts`
+- **样式文件**: `style.css` 或 `style.scss`
+- **测试文件**: `ComponentName.test.tsx`
+
+### 导出规范
+- 组件导出使用 `withInstall` 高阶函数包装
+- 类型定义统一在 `types.ts` 中导出
+- 样式文件通过 `index.ts` 统一导出
+- 测试文件使用 `.test.tsx` 扩展名
+
+### 文档规范
+- **Hooks文档**: 每个hooks包必须包含README.md，遵循hooks-readme-format.mdc规范
+- **API文档**: 使用JSDoc注释记录函数参数和返回值
+- **示例代码**: 所有示例代码必须使用TypeScript语法，能够直接运行
+
+### 依赖管理
+- 使用 pnpm workspace 管理多包依赖
+- 内部包依赖使用 `workspace:*` 语法
+- 外部依赖统一在根目录管理
+- 开发依赖按需分配到各包
+
+### 脚本
+- 项目的npm命令脚本在根目录执行
+
+### 流程
+- playground 组件用例调试：pnpm build -> pnpm story

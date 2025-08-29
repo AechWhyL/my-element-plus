@@ -1,0 +1,10 @@
+---
+alwaysApply: false
+---
+
+# 样式编写规范
+## 强制行为
+- 对于使用者有可能需要修改的css属性值，应尽量为其定义css变量。且当能够使用定义在theme子包中的有关主题css变量，应优先使用之。
+
+## 示例
+- 存在主题css变量：--color-primary ，则应有类似：-h-button-border-color(--color-primary)

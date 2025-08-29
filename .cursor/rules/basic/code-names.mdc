@@ -1,0 +1,10 @@
+---
+alwaysApply: false
+---
+# 命名规范
+## 强制行为
+- 每个组件的基础类名必须以 "h-" 作为前缀且遵循BEM规范，状态类名必须以 "is-" 作为前缀
+## 禁止行为
+
+## 示例
+- 类名：<div classname="h-button is-disabled">

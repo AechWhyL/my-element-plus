@@ -1,0 +1,47 @@
+---
+alwaysApply: false
+---
+# AI协作执行规则
+## 规则分类- basic/下的通用规则: 必须调用，通用基础规范- packages/下的模块规则: 按需调用，架构分层规范  - workflow/下的流程规则: 按需调用，业务场景规范
+## 执行流程
+1. 识别场景，分析需求，设计功能，探索方案 → 调用相关规则
+2. 读取示例代码 → 作为生成参考
+3. 执行强制/禁止行为 → 确保代码质量
+4. 应用设计原则 → 组件化、单一职责、分层设计
+## 质量保障- 所有规则必须100%执行，重点关注强制行为和禁止行为
+
+# 基础规范
+## 强制行为
+- 代码编写时，必须基于以下技术栈：
+  **框架**: Vue 3.5+ (Composition API)
+  **构建工具**: Vite 5.4+
+  **包管理器**: pnpm 10.12+
+  **语言**: TypeScript 5.8+
+  **测试框架**: Vitest + Vue Test Utils
+  **组件用例**: storybook
+  **样式**: CSS + Sass + PostCSS
+- 新增代码文件时，其必须按照以下目录结构规范：
+项目整体采用monorepo结构
+my-elementplus/
+├── packages/
+│   ├── components/          # 组件库核心包
+│   ├── core/               # 打包构建分发包
+│   ├── hooks/              # 通用的hook函数包
+│   ├── utils/              # 工具函数包
+│   ├── theme/              # 主题样式包，如全局css变量
+│   ├── docs/               # 文档包
+│   └── playground/         # 调试开发好的组件试用用例包
+具体子包目录结构规范：
+ComponentName/
+├── composables # 组件级别的组合式api hook文件夹(如需要)
+├── ComponentName.vue       # 主组件文件
+├── ComponentNameGroup.vue  # 组件文件（如需要组件拆分可有多个）
+├── Transition.vue # 各过渡动画文件（如需要）
+├── index.ts               # 导出文件
+├── types.ts               # TypeScript类型定义
+├── style.css/scss         # 样式文件
+├── constants.ts           # 常量定义
+└── __test__/              # 组件测试文件目录
+    └── ComponentName.test.tsx
+
+## 禁止行为

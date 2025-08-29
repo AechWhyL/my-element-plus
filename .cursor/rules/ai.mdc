@@ -1,0 +1,22 @@
+---
+alwaysApply: true
+---
+
+.cursor/rules/
+├── ai.mdc # AI协作总大纲
+├── basic/ # 基础规范目录
+    ├── basic.mdc
+    ├── code-quality.mdc
+    ├── style.mdc
+    ├── comment.mdc
+    └── code-names.mdc
+├── packages/ # 子包规范目录
+    ├── components.mdc
+    ├── core.mdc
+    ├── docs.mdc
+    ├── hooks.mdc
+    ├── playground.mdc
+    ├── theme.mdc
+    └── utils.mdc
+└── workflow/ # 工作流程规范目录
+    └── new-component.mdc

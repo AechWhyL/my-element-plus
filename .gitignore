@@ -34,7 +34,6 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
-*.cursor
 
 # 操作系统生成文件
 .DS_Store
