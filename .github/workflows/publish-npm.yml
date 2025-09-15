@@ -1,0 +1,58 @@
+name: Publish npm
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+      
+      - name: install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: test
+        run: pnpm test
+
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: setup node.js
+        uses: actions/setup-node@v4
+
+      - name: install dependencies
+        run: pnpm i --frozen-lockfile
+      
+      - name: get version
+        run: echo "TAG_VERSION=${GITHUB_REF#/refs/*/v}" >> $GITHUB_ENV
+      
+      - name: Update npm
+        run: npm install npm@9 -g
+
+      - name: Build core and publish
+        run: sh ./scripts/publish.sh
+        env: 
+          TAG_VERSION: ${{ env.TAG_VERSION }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
