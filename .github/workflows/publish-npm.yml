@@ -50,9 +50,6 @@ jobs:
       
       - name: get version
         run: echo "TAG_VERSION=${GITHUB_REF#/refs/*/v}" >> $GITHUB_ENV
-      
-      - name: Update npm
-        run: npm install npm@9 -g
 
       - name: Build core and publish
         run: sh ./scripts/publish.sh
