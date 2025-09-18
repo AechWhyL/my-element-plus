@@ -49,7 +49,7 @@ jobs:
         run: pnpm i --frozen-lockfile
       
       - name: get version
-        run: echo "TAG_VERSION=${GITHUB_REF#/refs/*/v}" >> $GITHUB_ENV
+        run: echo "TAG_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
 
       - name: Build core and publish
         run: sh ./scripts/publish.sh
