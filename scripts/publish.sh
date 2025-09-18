@@ -2,6 +2,7 @@
 
 set -e
 
+pnpm add -dw tsx
 pnpm i --frozen-lockfile
 pnpm update-version
 
