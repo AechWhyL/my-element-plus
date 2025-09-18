@@ -47,6 +47,11 @@ jobs:
 
       - name: install dependencies
         run: pnpm i --frozen-lockfile
+
+      - name: create .npmrc
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+          cat .npmrc
       
       - name: get version
         run: echo "TAG_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
