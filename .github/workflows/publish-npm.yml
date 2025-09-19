@@ -60,7 +60,8 @@ jobs:
         run: |
           cd packages/core
           echo "=== Testing publish (dry run) ==="
-          npm publish --dry-run --registry https://registry.npmjs.org/   
+          npm publish --dry-run --registry https://registry.npmjs.org/
+          continue-on-error: false
 
       - name: Build core and publish
         run: sh ./scripts/publish.sh
