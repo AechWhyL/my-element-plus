@@ -48,9 +48,6 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
 
-      - name: cat .npmrc
-        run: cat .npmrc
-
       - name: install dependencies
         run: pnpm i --frozen-lockfile
       
