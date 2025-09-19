@@ -44,14 +44,15 @@ jobs:
 
       - name: setup node.js
         uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+
+      - name: cat .npmrc
+        run: cat ./.npmrc
 
       - name: install dependencies
         run: pnpm i --frozen-lockfile
-
-      - name: create .npmrc
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
-          cat .npmrc
       
       - name: get version
         run: echo "TAG_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
@@ -61,7 +62,7 @@ jobs:
           cd packages/core
           echo "=== Testing publish (dry run) ==="
           npm publish --dry-run --registry https://registry.npmjs.org/
-          continue-on-error: false
+        continue-on-error: false
 
       - name: Build core and publish
         run: sh ./scripts/publish.sh
