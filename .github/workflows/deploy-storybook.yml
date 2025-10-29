@@ -11,16 +11,15 @@ on:
 # 限制并发，确保部署顺序
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 # 全局环境变量
 env:
   ARTIFACT_NAME: storybook-pages
 
-jobs:
-
-  setup:
-    name: Setup
+jobs:  
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,12 +33,6 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-  
-  build:
-    needs: setup
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
       - name: Build component library
         run: pnpm build
         env:
@@ -48,6 +41,16 @@ jobs:
         run: pnpm story:build
         env:
           NODE_OPTIONS: --max-old-space-size=4096
+      # 配置 GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      
+      # 上传构建产物
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: packages/playground/storybook-static
 
   deploy:
     needs: build
@@ -60,17 +63,6 @@ jobs:
       id-token: write
     
     steps:
-      # 配置 GitHub Pages
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      
-      # 上传构建产物
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          name: ${{ env.ARTIFACT_NAME }}
-          path: packages/playground/storybook-static
-      
       # 部署到 GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
