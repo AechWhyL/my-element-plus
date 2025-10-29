@@ -1,0 +1,85 @@
+name: Deploy Storybook to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  
+  workflow_dispatch:
+
+# 限制并发，确保部署顺序
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+# 全局环境变量
+env:
+  ARTIFACT_NAME: storybook-pages
+
+jobs:
+
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+  
+  build:
+    needs: setup
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build component library
+        run: pnpm build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+      - name: Build Storybook
+        run: pnpm story:build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+
+  deploy:
+    needs: build
+    name: Deploy Storybook
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    
+    steps:
+      # 配置 GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      
+      # 上传构建产物
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: packages/playground/storybook-static
+      
+      # 部署到 GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: ${{ env.ARTIFACT_NAME }}
+        continue-on-error: false
+
+      - name: Show deployment URL
+        run: echo "Deployment URL: ${{ steps.deployment.outputs.page_url }}"
+
+
