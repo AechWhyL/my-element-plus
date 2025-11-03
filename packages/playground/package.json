@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "hyl-fake-element-plus": "workspace:*",
+    "@hyl-fake-element-plus/components": "workspace:*",
     "vue": "^3.5.12"
   },
   "devDependencies": {
