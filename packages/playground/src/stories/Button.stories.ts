@@ -3,7 +3,13 @@ import { fn, within, userEvent, expect } from "storybook/test";
 
 import { ErButton, ErButtonGroup } from "hyl-fake-element-plus";
 import "hyl-fake-element-plus/dist/es/styles/index.css"
-import "hyl-fake-element-plus/dist/es/styles/Button.css"
+
+if (import.meta.env.DEV) {
+  await import("@hyl-fake-element-plus/components/Button/style.css")
+} else {
+  await import("hyl-fake-element-plus/dist/es/styles/Button.css")
+}
+
 
 type Story = StoryObj<typeof ErButton> & { argTypes?: ArgTypes };
 
